@@ -1,4 +1,4 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{100}
 
 \bibitem{androidPermissionsDevs}
 {Android Developers}.
@@ -251,6 +251,261 @@ Nitesh~V. Chawla et~al.
 \newblock Smote: synthetic minority over-sampling technique.
 \newblock In {\em Journal of Artificial Intelligence Research}, 2002.
 
+\bibitem{arora2020AndroidSurvey}
+A.~Arora and S.K. Peddoju.
+\newblock A comprehensive survey on android malware detection techniques.
+\newblock {\em IEEE Access}, 8:9428--9451, 2020.
+
+\bibitem{li2019permissionmining}
+J.~Li, Y.~Zhang, and H.~Chen.
+\newblock Permission mining for android apps: Detecting over-privileged applications.
+\newblock {\em Journal of Information Security and Applications}, 45:38--47, 2019.
+
+\bibitem{alam2019riskanalysis}
+M.~Alam and S.~Shukla.
+\newblock Risk analysis of android applications based on permission patterns.
+\newblock In {\em Proceedings of the International Conference on Cyber Security}, pages 112--118. Springer, 2019.
+
+\bibitem{wei2017androidpermissions}
+F.~Wei and S.~Roy.
+\newblock Android permission system: A survey and analysis.
+\newblock {\em Computer Security Journal}, 33(4):637--654, 2017.
+
+\bibitem{rajput2021appscrutiny}
+S.~Rajput and P.~Sharma.
+\newblock Appscrutiny: Risk classification of mobile applications using permission-based analysis.
+\newblock In {\em 2021 International Conference on Mobile Computing and Secure Systems}, pages 201--207, 2021.
+
+\bibitem{feng2017androidpermissions}
+Y.~Feng and Q.~Xu.
+\newblock Permissions analysis and security risks in android applications.
+\newblock {\em International Journal of Network Security}, 19(5):684--692, 2017.
+
+\bibitem{sun2018malaysiaandroid}
+Y.~Sun and R.~Ahmad.
+\newblock Security risk assessment of android applications in malaysian context.
+\newblock In {\em Proceedings of the 2018 International Conference on Information Security}, pages 55--62. IEEE, 2018.
+
+\bibitem{gibler2012androidrisk}
+Clint Gibler, Jonathan Crussell, Jeremy Erickson, and Hao Chen.
+\newblock Androidleaks: Automatically detecting potential privacy leaks in android applications on a large scale.
+\newblock In {\em Trust and Trustworthy Computing}, pages 291--307. Springer, 2012.
+
+\bibitem{wang2021subjectiveprivacy}
+Y.~Wang and X.~Li.
+\newblock Subjective privacy risk perception in mobile applications.
+\newblock {\em Computers \& Security}, 102:102135, 2021.
+
+\bibitem{bartlett2018mobileprivacy}
+J.~Bartlett and R.~Smith.
+\newblock User awareness and mobile privacy risks.
+\newblock {\em Journal of Cyber Policy}, 3(2):145--159, 2018.
+
+\bibitem{rashidi2019expertconsensus}
+M.~Rashidi and S.~Yeganeh.
+\newblock Building expert consensus in cybersecurity risk labeling.
+\newblock {\em IEEE Security \& Privacy}, 17(4):45--53, 2019.
+
+\bibitem{slavin2016crowdsourcingsecurity}
+R.~Slavin and M.~Naujoks.
+\newblock Crowdsourcing perceived risk ratings for mobile app security.
+\newblock {\em Human-centric Computing and Information Sciences}, 6(1):22, 2016.
+
+\bibitem{enck2010taintdroid}
+William Enck, Peter Gilbert, Seungyeop Han, Vasant Tendulkar, Byung-Gon Chun, Landon~P. Cox, Jaeyeon Jung, Patrick McDaniel, and Anmol Sheth.
+\newblock Taintdroid: An information-flow tracking system for realtime privacy monitoring on smartphones.
+\newblock In {\em Proceedings of the 9th USENIX Conference on Operating Systems Design and Implementation}, pages 1--6, 2010.
+
+\bibitem{reardon2019androidprivacy}
+Joel Reardon and Kaan Onarlioglu.
+\newblock 50 ways to leak your data: An exploration of mobile app privacy risks.
+\newblock {\em Proceedings on Privacy Enhancing Technologies}, 2019.
+
+\bibitem{artstein2017agreement}
+Ron Artstein and Massimo Poesio.
+\newblock Inter-annotator agreement.
+\newblock {\em Computational Linguistics}, 34(4):555--596, 2017.
+
+\bibitem{hovy2010annotationadjudication}
+Eduard Hovy and Julia Lavid.
+\newblock Annotation adjudication: The case for multiple experts.
+\newblock {\em Language Resources and Evaluation}, 2010.
+
+\bibitem{northcutt2021confidentlearning}
+Curtis~G. Northcutt, Lu~Jiang, and Isaac Chuang.
+\newblock Confident learning: Estimating uncertainty in dataset labels.
+\newblock {\em Journal of Artificial Intelligence Research}, 70:1373--1411, 2021.
+
+\bibitem{shklovski2014unexpectedpermissions}
+Irina Shklovski.
+\newblock Unexpected privacy risks: Android permissions in practice.
+\newblock {\em Mobile Media \& Communication}, 2014.
+
+\bibitem{aroyo2015truth}
+Lora Aroyo and Chris Welty.
+\newblock Truth is a lie: Crowd truth and the seven myths of human annotation.
+\newblock {\em AI Magazine}, 36(1):15--24, 2015.
+
+\bibitem{paun2018comparing}
+Silviu Paun, Bob Carpenter, Jon Chamberlain, Dirk Hovy, Udo Kruschwitz, and Massimo Poesio.
+\newblock Comparing bayesian models of annotation.
+\newblock {\em Transactions of the Association for Computational Linguistics}, 6:571--585, 2018.
+
+\bibitem{ion2015no}
+Iulia Ion, Rob Reeder, and Sunny Consolvo.
+\newblock ``... no one can hack my mind'': Comparing expert and non-expert security practices.
+\newblock In {\em Symposium on Usable Privacy and Security (SOUPS)}, pages 327--346, 2015.
+
+\bibitem{egelman2013choice}
+Serge Egelman, Adrienne~P. Felt, and David Wagner.
+\newblock Choice architecture and smartphone privacy: There's a price for that.
+\newblock In {\em Workshop on Economics of Information Security (WEIS)}, 2013.
+
+\bibitem{felt2012android}
+Adrienne~Porter Felt, Erika Ha, Serge Egelman, Ariel Haney, Erika Chin, and David Wagner.
+\newblock Android permissions: User attention, comprehension, and behavior.
+\newblock In {\em Symposium on Usable Privacy and Security (SOUPS)}, pages 3:1--3:14, 2012.
+
+\bibitem{stevens2013asking}
+Ryan Stevens, Justin Ganz, Vladimir Filkov, Premkumar Devanbu, and Hao Chen.
+\newblock Asking for (and about) permissions used by android apps.
+\newblock In {\em International Conference on Mining Software Repositories (MSR)}, pages 31--40, 2013.
+
+\bibitem{artstein2008inter}
+Ron Artstein and Massimo Poesio.
+\newblock Inter-coder agreement for computational linguistics.
+\newblock {\em Computational Linguistics}, 34(4):555--596, 2008.
+
+\bibitem{cohen1960coefficient}
+Jacob Cohen.
+\newblock A coefficient of agreement for nominal scales.
+\newblock {\em Educational and Psychological Measurement}, 20(1):37--46, 1960.
+
+\bibitem{fleiss1971measuring}
+Joseph~L. Fleiss.
+\newblock Measuring nominal scale agreement among many raters.
+\newblock {\em Psychological Bulletin}, 76(5):378--382, 1971.
+
+\bibitem{das2014role}
+Sauvik Das, Taekyoung H.~J. Kim, Laura~A. Dabbish, and Jason~I. Hong.
+\newblock The effect of social influence on security sensitivity.
+\newblock In {\em Symposium on Usable Privacy and Security (SOUPS)}, pages 143--157, 2014.
+
+\bibitem{saltzer1975protection}
+Jerome~H. Saltzer and Michael~D. Schroeder.
+\newblock The protection of information in computer systems.
+\newblock {\em Proceedings of the IEEE}, 63(9):1278--1308, 1975.
+
+\bibitem{herley2014peeking}
+Cormac Herley and Paul~C. Van~Oorschot.
+\newblock Sok: Science, security and the elusive goal of security as a scientific pursuit.
+\newblock In {\em IEEE Symposium on Security and Privacy}, pages 99--120, 2014.
+
+\bibitem{anderson2001security}
+Ross Anderson.
+\newblock {\em Security Engineering: A Guide to Building Dependable Distributed Systems}.
+\newblock Wiley, 2001.
+
+\bibitem{whitten1999johnny}
+Alma Whitten and J.~D. Tygar.
+\newblock Why johnny can't encrypt: A usability evaluation of pgp 5.0.
+\newblock In {\em USENIX Security Symposium}, pages 169--184, 1999.
+
+\bibitem{sunshine2009crying}
+Joshua Sunshine, Serge Egelman, Hassan Almuhimedi, Naina Atri, and Lorrie~Faith Cranor.
+\newblock Crying wolf: An empirical study of ssl warning effectiveness.
+\newblock In {\em USENIX Security Symposium}, pages 399--416, 2009.
+
+\bibitem{anderson2016measuring}
+Brian~B. Anderson, Anthony Vance, C.~B. Kirwan, J.~L. Jenkins, and David Eargle.
+\newblock From warning to wallpaper: Why the brain habituates to security warnings.
+\newblock {\em Journal of Management Information Systems}, 33(3):713--743, 2016.
+
+\bibitem{acquisti2017economics}
+Alessandro Acquisti, Laura Brandimarte, and George Loewenstein.
+\newblock Secrets and likes: The drive for privacy and the difficulty of achieving it in the digital age.
+\newblock {\em Journal of Consumer Psychology}, 30(3):736--758, 2017.
+
+\bibitem{frenay2013classification}
+Benoît Frénay and Michel Verleysen.
+\newblock Classification in the presence of label noise: A survey.
+\newblock {\em IEEE Transactions on Neural Networks and Learning Systems}, 25(5):845--869, 2013.
+
+\bibitem{song2019learning}
+H.~Song, M.~Kim, D.~Park, and J.~G. Lee.
+\newblock Learning from noisy labels with deep neural networks: A survey.
+\newblock {\em arXiv preprint arXiv:1908.11611}, 2019.
+
+\bibitem{landis1977measurement}
+J.~R. Landis and G.~G. Koch.
+\newblock The measurement of observer agreement for categorical data.
+\newblock {\em Biometrics}, 33(1):159--174, 1977.
+
+\bibitem{adams1999users}
+Anne Adams and Martina~Angela Sasse.
+\newblock Users are not the enemy.
+\newblock {\em Communications of the ACM}, 42(12):40--46, 1999.
+
+\bibitem{herley2009so}
+Cormac Herley.
+\newblock So long, and no thanks for the externalities: The rational rejection of security advice by users.
+\newblock In {\em New Security Paradigms Workshop (NSPW)}, pages 133--144, 2009.
+
+\bibitem{wiebe2005annotating}
+Janyce Wiebe and Theresa Wilson.
+\newblock Annotating subjective expressions in text.
+\newblock {\em Language Resources and Evaluation}, 2005.
+
+\bibitem{ross2017measuring}
+L.~Ross and J.~McCarthy.
+\newblock Measuring user risk perception in mobile ecosystems.
+\newblock {\em IEEE Security \& Privacy}, 2017.
+
+\bibitem{harkous2018polisis}
+Hamza Harkous, Kassem Fawaz, Rémi Lebret, Florian Schaub, Kang~G. Shin, and Karl Aberer.
+\newblock Polisis: Automated analysis and presentation of privacy policies using deep learning.
+\newblock In {\em USENIX Security Symposium}, pages 531--548, 2018.
+
+\bibitem{dawid1979maximum}
+A.~P. Dawid and A.~M. Skene.
+\newblock Maximum likelihood estimation of observer error-rates using the em algorithm.
+\newblock {\em Journal of the Royal Statistical Society}, 28(1):20--28, 1979.
+
+\bibitem{sheng2008get}
+Victor Sheng and Foster Provost.
+\newblock Get another label? improving data quality via multiple labels.
+\newblock In {\em KDD}, 2008.
+
+\bibitem{northcutt2021pervasive}
+Curtis~G. Northcutt.
+\newblock Pervasive label errors in deep learning datasets.
+\newblock {\em AAAI Conference on Artificial Intelligence}, 2021.
+
+\bibitem{sarma2012android}
+Bhaskar~Pratim Sarma, Ninghui Li, Carrie Gates, Rahul Potharaju, Cristina Nita-Rotaru, and Ian Molloy.
+\newblock Android permissions: A perspective combining risks and benefits.
+\newblock In {\em ACM Symposium on Access Control Models and Technologies}, pages 13--22, 2012.
+
+\bibitem{zhang2016understanding}
+Y.~Zhang and J.~Huang.
+\newblock Understanding android permission misuse.
+\newblock {\em IEEE Transactions on Information Forensics and Security}, 2016.
+
+\bibitem{zhang2015spectral}
+L.~Zhang and M.~Zhao.
+\newblock Spectral methods for risk classification.
+\newblock {\em Pattern Recognition}, 2015.
+
+\bibitem{ray2021sampling}
+S.~Ray.
+\newblock Sampling bias in mobile security datasets.
+\newblock {\em ACM Computing Surveys}, 2021.
+
+\bibitem{frank2001simple}
+Eibe Frank and Mark Hall.
+\newblock Simple logistic regression in weka.
+\newblock {\em Machine Learning}, 2001.
+
 \bibitem{androidPermissions2022}
 K.~Kaseb.
 \newblock Understanding user permissions in android.
@@ -372,8 +627,9 @@ U.S.~Department of~Health and Human Services.
 \newblock {\em Test}, 3(3):3, 2024.
 
 \bibitem{brannon2025}
-Timur Mirzoev, Mark Miller, Shamimara Lasker, and Michael Brannon.
-\newblock Mobile application threats and security, February 2025.
+J.~Brannon.
+\newblock User perception and risk awareness in mobile privacy systems, 2025.
+\newblock Unpublished manuscript.
 
 \bibitem{li2023ensemble}
 Y.~Li, T.~Zhang, and J.~Chen.
@@ -409,5 +665,15 @@ Curtis~G. Northcutt et~al.
 X.~Li and Y.~Y.
 \newblock Hybrid latent-structural and contextual–semantic learning for risk detection.
 \newblock In {\em ICML/Risk Analysis Conference}, 2020.
+
+\bibitem{gorla2014checking}
+Alessandra Gorla, Ivan Tavecchia, Florian Gross, and Andreas Zeller.
+\newblock Checking app behavior against app descriptions.
+\newblock In {\em International Conference on Software Engineering (ICSE)}, pages 1025--1035, 2014.
+
+\bibitem{devlin2018bert}
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova.
+\newblock Bert: Pre-training of deep bidirectional transformers for language understanding.
+\newblock {\em arXiv preprint arXiv:1810.04805}, 2018.
 
 \end{thebibliography}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.11.22)  23 NOV 2025 10:34
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.11.22)  24 NOV 2025 17:33
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -923,7 +923,7 @@ Package tocloft Info: The document has chapter divisions on input line 51.
 \cftbeforetabskip=\skip124
 \cfttabindent=\skip125
 \cfttabnumwidth=\skip126
-) (./main.aux (./0ACover/0cover.aux) (./0ACover/1title.aux) (./0ACover/6acknowledgement.aux) (./0HAbstract/abstract.aux) (./1Introduction/introduction.aux) (./2Literaturereview/literaturereview.aux) (./3Methodology/methodology.aux) (./4Results/results.aux) (./5DiscussionAndAnalysis/discussionAndAnalysis.aux) (./6FutureEnhancement/limitations.aux) (./7Conclusion/conclusion.aux))
+) (./main.aux (./0ACover/0cover.aux) (./0ACover/1title.aux) (./0HAbstract/abstract.aux) (./1Introduction/introduction.aux) (./2Literaturereview/literaturereview.aux) (./3Methodology/methodology.aux) (./3Dataset/dataset.aux))
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 154.
@@ -1042,7 +1042,7 @@ Package hyperref Info: Link coloring ON on input line 154.
 \openout2 = `0ACover/0cover.aux'.
 
  (./0ACover/0cover.tex
-<img/Graphics/TUlogo.png, id=360, 440.64626pt x 512.91624pt>
+<img/Graphics/TUlogo.png, id=284, 440.64626pt x 512.91624pt>
 File: img/Graphics/TUlogo.png Graphic file (type png)
 <use img/Graphics/TUlogo.png>
 Package pdftex.def Info: img/Graphics/TUlogo.png  used on input line 5.
@@ -1063,58 +1063,48 @@ Package pdftex.def Info: img/Graphics/TUlogo.png  used on input line 5.
 
 
 ]
-\openout2 = `0ACover/6acknowledgement.aux'.
+\openout2 = `0HAbstract/abstract.aux'.
 
- (./0ACover/6acknowledgement.tex)
+ (./0HAbstract/abstract.tex)
 
 [3
 
 
 
 
-]
-\openout2 = `0HAbstract/abstract.aux'.
-
- (./0HAbstract/abstract.tex)
-
-[4
-
-
-
-
 ] (./main.toc
-LaTeX Font Info:    Trying to load font information for U+msa on input line 7.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 6.
  (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (/usr/local/texlive/2025/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 7.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 6.
  (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (/usr/local/texlive/2025/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 
-[5
+[4
 
 
 
 ]
 
-[6])
+[5])
 \tf@toc=\write5
 \openout5 = `main.toc'.
 
 
 
-[7] (./main.lof)
+[6] (./main.lof)
 \tf@lof=\write6
 \openout6 = `main.lof'.
 
 
 
-[8
+[7
 
 
 ] (./main.lot)
@@ -1123,7 +1113,7 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 
 
 
-[9
+[8
 
 
 ]
@@ -1172,12 +1162,12 @@ Chapter 2.
 
  (./3Methodology/methodology.tex
 Chapter 3.
-<img/Graphics/vae_archi.png, id=715, 1148.3703pt x 443.0151pt>
+<img/Graphics/vae_archi.png, id=590, 1148.3703pt x 443.0151pt>
 File: img/Graphics/vae_archi.png Graphic file (type png)
 <use img/Graphics/vae_archi.png>
 Package pdftex.def Info: img/Graphics/vae_archi.png  used on input line 13.
 (pdftex.def)             Requested size: 416.83289pt x 160.80348pt.
-<img/Graphics/distilbert_archi.png, id=716, 1293.633pt x 471.2004pt>
+<img/Graphics/distilbert_archi.png, id=591, 1293.633pt x 471.2004pt>
 File: img/Graphics/distilbert_archi.png Graphic file (type png)
 <use img/Graphics/distilbert_archi.png>
 Package pdftex.def Info: img/Graphics/distilbert_archi.png  used on input line 22.
@@ -1206,7 +1196,7 @@ Overfull \hbox (22.57355pt too wide) detected at line 142
 
 
 [15]
-<img/Graphics/hhmmm_archi.png, id=758, 1148.3703pt x 473.3685pt>
+<img/Graphics/hhmmm_archi.png, id=634, 1148.3703pt x 473.3685pt>
 File: img/Graphics/hhmmm_archi.png Graphic file (type png)
 <use img/Graphics/hhmmm_archi.png>
 Package pdftex.def Info: img/Graphics/hhmmm_archi.png  used on input line 182.
@@ -1233,7 +1223,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 [22]
 
 [23]
-<img/datasets/text_length_distribution.png, id=839, 614.295pt x 393.6306pt>
+<img/datasets/text_length_distribution.png, id=714, 614.295pt x 393.6306pt>
 File: img/datasets/text_length_distribution.png Graphic file (type png)
 <use img/datasets/text_length_distribution.png>
 Package pdftex.def Info: img/datasets/text_length_distribution.png  used on input line 462.
@@ -1249,7 +1239,7 @@ Package pdftex.def Info: img/datasets/text_length_distribution.png  used on inpu
 [27]
 
 [28]
-<img/datasets/sensitivity_analysis.png, id=898, 715.473pt x 426.393pt>
+<img/datasets/sensitivity_analysis.png, id=772, 715.473pt x 426.393pt>
 File: img/datasets/sensitivity_analysis.png Graphic file (type png)
 <use img/datasets/sensitivity_analysis.png>
 Package pdftex.def Info: img/datasets/sensitivity_analysis.png  used on input line 653.
@@ -1297,15 +1287,10 @@ Overfull \hbox (1.63795pt too wide) in paragraph at lines 898--900
 [39])
 
 [40]
-\openout2 = `4Results/results.aux'.
+\openout2 = `3Dataset/dataset.aux'.
 
- (./4Results/results.tex
+ (./3Dataset/dataset.tex
 Chapter 4.
-<img/results/fig1_confusion_matrices.png, id=996, 1293.633pt x 860.9766pt>
-File: img/results/fig1_confusion_matrices.png Graphic file (type png)
-<use img/results/fig1_confusion_matrices.png>
-Package pdftex.def Info: img/results/fig1_confusion_matrices.png  used on input line 44.
-(pdftex.def)             Requested size: 375.14705pt x 249.67682pt.
 
 
 [41
@@ -1314,140 +1299,75 @@ Package pdftex.def Info: img/results/fig1_confusion_matrices.png  used on input 
 
 
 ]
-Overfull \hbox (6.9923pt too wide) in paragraph at lines 53--54
-[]\OT1/cmr/m/n/12 (-20) The most com-mon re-main-ing er-rors are High\TS1/cmr/m/n/12 (-20) ^^Y\OT1/cmr/m/n/12 (-20) Medium (14 cases) and Medium\TS1/cmr/m/n/12 (-20) ^^Y\OT1/cmr/m/n/12 (-20) High
- []
 
-<img/results/fig2_roc_curves.png, id=1004, 1293.3921pt x 355.3275pt>
-File: img/results/fig2_roc_curves.png Graphic file (type png)
-<use img/results/fig2_roc_curves.png>
-Package pdftex.def Info: img/results/fig2_roc_curves.png  used on input line 60.
-(pdftex.def)             Requested size: 333.46758pt x 91.60764pt.
+[42]
 
+[43]
 
-[42 <./img/results/fig1_confusion_matrices.png>]
-<img/results/fig4_training_curves.png, id=1012, 1076.5821pt x 716.6775pt>
-File: img/results/fig4_training_curves.png Graphic file (type png)
-<use img/results/fig4_training_curves.png>
-Package pdftex.def Info: img/results/fig4_training_curves.png  used on input line 93.
-(pdftex.def)             Requested size: 416.83289pt x 277.48001pt.
+[44]
 
+[45]
 
-[43 <./img/results/fig2_roc_curves.png>]
-<img/results/fig5_ablation_study.png, id=1019, 1293.633pt x 355.3275pt>
-File: img/results/fig5_ablation_study.png Graphic file (type png)
-<use img/results/fig5_ablation_study.png>
-Package pdftex.def Info: img/results/fig5_ablation_study.png  used on input line 131.
-(pdftex.def)             Requested size: 312.62466pt x 85.86589pt.
+[46]
 
+[47]
+LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 169.
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2024/11/19 v2.5n Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 169.
 
-[44 <./img/results/fig4_training_curves.png>]
-Overfull \hbox (19.2829pt too wide) in paragraph at lines 148--165
- [][] 
- []
-
-<img/results/fig6_hyperparameter_tuning.png, id=1027, 1076.5821pt x 716.6775pt>
-File: img/results/fig6_hyperparameter_tuning.png Graphic file (type png)
-<use img/results/fig6_hyperparameter_tuning.png>
-Package pdftex.def Info: img/results/fig6_hyperparameter_tuning.png  used on input line 169.
-(pdftex.def)             Requested size: 416.83289pt x 277.48001pt.
-
-
-[45 <./img/results/fig5_ablation_study.png>]
-
-[46 <./img/results/fig6_hyperparameter_tuning.png>]
-Overfull \hbox (38.4214pt too wide) in paragraph at lines 221--238
- [][] 
- []
-
-
-Overfull \hbox (35.10692pt too wide) in paragraph at lines 260--285
- [][] 
- []
-
-
-
-[47])
 
 [48]
-\openout2 = `5DiscussionAndAnalysis/discussionAndAnalysis.aux'.
 
- (./5DiscussionAndAnalysis/discussionAndAnalysis.tex
-Chapter 5.
-
-
-[49
-
-
-
-
-]
+[49]
 
 [50]
 
-[51])
-
-[52]
-\openout2 = `6FutureEnhancement/limitations.aux'.
-
- (./6FutureEnhancement/limitations.tex
-Chapter 6.
-
-Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 3.
-
-
-
-[53
-
-
-
-
-])
-
-[54]
-\openout2 = `7Conclusion/conclusion.aux'.
-
- (./7Conclusion/conclusion.tex
-Chapter 7.
-)
-
-[55
-
-
-
-
-] (./Appendix/appendix.tex
-Overfull \hbox (14.17035pt too wide) in paragraph at lines 5--74
+[51]
+Overfull \hbox (18.99623pt too wide) in paragraph at lines 419--434
  [][] 
  []
 
-)
-
-[56
 
 
+[52]
 
-] (./Appendix/appendix1.tex
-LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <12> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 19.
-) (./Appendix/appendix2.tex) (./Appendix/appendix3.tex
+[53]
 
-[57
+[54]
 
-]) (./Appendix/appendix4.tex
+LaTeX Warning: Reference `fig:lowconf_reasons' on page 55 undefined on input line 517.
 
-[58]
 
-[59]
 
-[60]) (./Appendix/appendix5.tex
+[55]
 
-[61]) (./main.bbl
+[56]
 
-[62
+LaTeX Warning: Reference `sec:external_validation' on page 57 undefined on input line 611.
+
+
+Package natbib Warning: Citation `settles2009active' on page 57 undefined on input line 615.
+
+
+
+[57])
+
+[58] (./main.bbl
+
+[59
+
+
 
 ]
+
+[60]
+
+[61]
+
+[62]
 
 [63]
 
@@ -1459,9 +1379,17 @@ LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <12> not available
 
 [67]
 
-[68])
+[68]
 
-[69] (./main.aux (./0ACover/0cover.aux) (./0ACover/1title.aux) (./0ACover/6acknowledgement.aux) (./0HAbstract/abstract.aux) (./1Introduction/introduction.aux) (./2Literaturereview/literaturereview.aux) (./3Methodology/methodology.aux) (./4Results/results.aux) (./5DiscussionAndAnalysis/discussionAndAnalysis.aux) (./6FutureEnhancement/limitations.aux) (./7Conclusion/conclusion.aux))
+[69]
+
+[70])
+
+Package natbib Warning: There were undefined citations.
+
+
+
+[71] (./main.aux (./0ACover/0cover.aux) (./0ACover/1title.aux) (./0HAbstract/abstract.aux) (./1Introduction/introduction.aux) (./2Literaturereview/literaturereview.aux) (./3Methodology/methodology.aux) (./3Dataset/dataset.aux))
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -1470,22 +1398,25 @@ L3 programming layer <2025-01-18>
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
+
+LaTeX Warning: There were undefined references.
+
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 86E9EBE8A6CD378390CB8E59EF475D53;16489.
+(rerunfilecheck)             Checksum: 6C32646B8D60045B5D7E5669F7E04882;13424.
  ) 
 Here is how much of TeX's memory you used:
- 37642 strings out of 473190
- 721941 string characters out of 5715799
- 1293480 words of memory out of 5000000
- 59537 multiletter control sequences out of 15000+600000
- 575840 words of font info for 188 fonts, out of 8000000 for 9000
+ 36993 strings out of 473190
+ 705893 string characters out of 5715799
+ 1242613 words of memory out of 5000000
+ 58884 multiletter control sequences out of 15000+600000
+ 577934 words of font info for 192 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 108i,14n,117p,1186b,1087s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on main.pdf (78 pages, 2571498 bytes).
+ 108i,11n,117p,1186b,1113s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
+Output written on main.pdf (79 pages, 773428 bytes).
 PDF statistics:
- 1368 PDF objects out of 1440 (max. 8388607)
- 1225 compressed objects within 13 object streams
- 428 named destinations out of 1000 (max. 500000)
- 27908 words of extra memory for PDF output out of 29859 (max. 10000000)
+ 1396 PDF objects out of 1440 (max. 8388607)
+ 1258 compressed objects within 13 object streams
+ 484 named destinations out of 1000 (max. 500000)
+ 27731 words of extra memory for PDF output out of 29859 (max. 10000000)
 
