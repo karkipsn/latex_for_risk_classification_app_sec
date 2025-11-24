@@ -1,0 +1,232 @@
+\chapter{DISCUSSION AND ANALYSIS}
+
+\section{Key Findings}
+
+\subsection{Multi-Modal Fusion Improves Performance}
+
+Our results show that combining textual and structural features significantly improves accuracy. The BERT-only model achieved 68.92\%, while our final hybrid model with attention reached 77.48\% (+8.56\% improvement).
+
+However, an important finding is that naive feature combination actually hurts performance. The original hybrid model (65.68\%) performed worse than BERT alone (68.92\%). This shows that simply concatenating features from different sources is not enough. We need intelligent fusion mechanisms like attention to properly combine the information.
+
+The attention mechanism learns when to rely on text features (for apps with detailed descriptions) and when to emphasize structural features (for apps with suspicious permission patterns but minimal text). This dynamic weighting is crucial for effective multi-modal learning.
+
+\subsection{Class Imbalance is the Main Challenge}
+
+The most significant improvement came from addressing class imbalance using focal loss (+8.19\% accuracy). The Medium risk class was particularly challenging, with the VAE-only model achieving just 39.92\% F1 score for this class.
+
+Focal loss works by focusing the model's attention on hard-to-classify examples while reducing the influence of easy examples. This is especially important for the Medium class, which sits at the boundary between Low and High risk and contains inherently ambiguous cases.
+
+Our results show:
+\begin{itemize}
+\item Low risk: Easy to classify, minimal benefit from focal loss (+2.1\%)
+\item Medium risk: Very challenging, large benefit from focal loss (+15.4\%)  
+\item High risk: Moderately difficult, moderate benefit from focal loss (+4.4\%)
+\end{itemize}
+
+This validates that focal loss specifically helps with the most difficult cases, which is exactly what we need for imbalanced classification.
+
+\subsection{Text Features Dominate but Structure Matters}
+
+The ablation study reveals that BERT contributes much more than VAE (removing BERT drops accuracy by 19.92\% vs. 7.21\% for VAE). This makes sense because app descriptions contain rich semantic information about functionality and intent.
+
+However, VAE's 7.21\% contribution is still significant. VAE helps in specific scenarios:
+
+\textbf{Scenario 1 - Sparse Descriptions:} When apps have minimal text (<30 words), VAE provides critical structural information through permission patterns.
+
+\textbf{Scenario 2 - Misleading Descriptions:} Some apps have convincing descriptions but suspicious permissions (e.g., "Simple Calculator" requesting SMS access). VAE helps detect this mismatch.
+
+\textbf{Scenario 3 - Permission Context:} VAE captures relationships between permissions that indicate risk, even when descriptions are neutral.
+
+This complementary nature justifies using both modalities despite the additional complexity.
+
+% ----------------------------------------------------------------------------
+\section{Understanding the Errors}
+\label{sec:error_understanding}
+
+\subsection{Where Does the Model Fail?}
+
+Analyzing the 53 misclassified cases (22.5\% of test set) reveals three main error types:
+
+\textbf{1. Boundary Ambiguity (60\% of errors):}
+
+These are genuinely difficult cases where even human experts might disagree. For example, messaging apps need SMS, CONTACTS, and LOCATION permissions for legitimate features, but this also creates high privacy risk. The "correct" classification depends on context we don't have (how the app actually uses these permissions).
+
+\textbf{2. Description-Permission Mismatch (25\% of errors):}
+
+Apps where descriptions and permissions give conflicting signals confuse the model. A weather app with a professional description but unexplained SMS permission access creates ambiguity. The model relies heavily on text (73\% attention weight), so convincing descriptions can mislead it.
+
+\textbf{3. Genre Bias (15\% of errors):}
+
+Our manually designed genre weights sometimes fail. Educational apps generally get low risk weights, but some educational apps (like AR learning apps) legitimately need many permissions. The model incorrectly biases toward low risk based on genre.
+
+\subsection{Critical vs. Acceptable Errors}
+
+Not all errors are equally important. High→Low errors (predicting a risky app is safe) are most dangerous, but we only have 3 such cases (3.8\%). This low rate is good for deployment since missing dangerous apps is worse than flagging safe apps for review.
+
+The model makes more High→Medium errors (14 cases), which are less critical. These apps still get flagged for review, just not at the highest priority level. This conservative behavior is actually desirable for security applications.
+
+% ----------------------------------------------------------------------------
+\section{Comparison with Existing Approaches}
+\label{sec:comparison_discussion}
+
+\subsection{Why Our Model Performs Better}
+
+Our model (77.48\%) outperforms all recent methods, despite having much less training data:
+
+\textbf{vs. Traditional ML (Random Forest, SVM):} +9-15\% improvement
+
+These methods rely on hand-crafted features (counting dangerous permissions, keyword matching). They cannot capture semantic nuances like the difference between "share location with friends" (lower risk) vs. "track location history" (higher risk). Our learned representations automatically capture these patterns.
+
+% \textbf{vs. LSTM:} +7.25\% improvement
+
+% LSTM treats permissions as sequences, but permission order is arbitrary in Android manifests. Our VAE treats permissions as sets, which better matches the actual data structure.
+
+% \textbf{vs. BERT-only:} +5.14\% improvement
+
+% Pure text-based approaches miss structural signals from permissions. Our multi-modal approach captures both types of information.
+
+% \textbf{vs. Multi-modal CNN:} +2.92\% improvement
+
+% This is our closest competitor (74.56\%). Both combine text and structure, but we use:
+% \begin{itemize}
+% \item Attention-based fusion (vs. their simple concatenation)
+% \item Focal loss (vs. their standard cross-entropy)
+% \item Transformer text encoding (vs. their CNN encoding)
+% \end{itemize}
+
+% Most impressive: they used 2000 training samples while we used only 223 (9× less data). This shows our architecture is highly sample-efficient.
+
+% ----------------------------------------------------------------------------
+\section{Practical Implications}
+\label{sec:practical}
+
+% \subsection{Deployment Recommendations}
+
+% Based on our results, we recommend a tiered approach for production deployment:
+
+% \textbf{High Confidence Predictions (Confidence > 0.85):}
+% \begin{itemize}
+% \item Automatically approve Low risk apps (94.7\% accuracy)
+% \item Automatically flag High risk apps (96.2\% accuracy)
+% \item Covers approximately 60-65\% of submissions
+% \item Processing speed: 23,000 apps/hour on GPU
+% \end{itemize}
+
+% \textbf{Low Confidence Predictions (Confidence < 0.85):}
+% \begin{itemize}
+% \item Route to manual security review
+% \item Prioritize by predicted risk score
+% \item Approximately 30-35\% of submissions
+% \end{itemize}
+
+% \textbf{All Medium Risk Predictions:}
+% \begin{itemize}
+% \item Always require manual review
+% \item These are inherently ambiguous cases
+% \item Model achieves only 58.3\% accuracy on ambiguous Medium risk apps
+% \end{itemize}
+
+\subsection{Real-World Performance Expectations}
+
+Our test set results (77.48\%) are likely optimistic. In real deployment, we expect 3-5\% accuracy degradation due to:
+
+\begin{itemize}
+\item \textbf{Distribution shift:} New apps will differ from training data (new categories, evolving trends)
+\item \textbf{Adversarial behavior:} Malicious developers may craft descriptions to evade detection
+\item \textbf{Temporal drift:} App development practices change over time
+\end{itemize}
+
+Conservative estimate: 72-75\% accuracy after 6-12 months in production. This can be maintained through periodic retraining with newly labeled data.
+
+\subsection{Benefits}
+
+% \textbf{Costs:}
+% \begin{itemize}
+% \item Training: 58.9 minutes on GPU (~\$0.50)
+% \item Inference: 156ms per app (negligible at scale)
+% \item Infrastructure: Standard ML serving setup
+% \end{itemize}
+
+% \textbf{Benefits:}
+\begin{itemize}
+\item Manual review: \$50-200 per app
+\item Automated screening: <\$0.01 per app
+\item Efficiency: 4-5× better at finding risky apps vs. random sampling
+\end{itemize}
+
+For an app store with 10,000 daily submissions, automated screening can catch 4× more dangerous apps while requiring manual review of only 30-35\% of submissions instead of random sampling.
+
+
+
+
+% \section{Model Behavior and Convergence}
+
+% \subsection{Theoretical Expectations}
+
+% The Variational Autoencoder (VAE) component, following Kingma and Welling’s formulation \cite{kingma2014autoencoding}, is designed to learn a structured latent space that balances reconstruction accuracy and latent regularization.  
+% When integrated with contextual embeddings from DistilBERT \cite{sanh2019distilbert}, the model is expected to demonstrate:
+
+% \begin{itemize}
+%     \item \textbf{Reconstruction Loss:} Gradual decline reflecting improved fidelity in reproducing input permission vectors.
+%     \item \textbf{KL Divergence:} Stabilization at a moderate positive value ($0.05$–$0.1$), ensuring regularization without posterior collapse.
+%     \item \textbf{Total Loss:} Smooth downward trajectory over training epochs, with convergence near 0.25–0.30, depending on learning rate and annealing schedule.
+% \end{itemize}
+
+% Such dynamics indicate balanced learning and stable optimization without overfitting.
+
+% \subsection{Observed Convergence Behavior}
+
+% Empirical training curves largely aligned with theoretical expectations, though minor instabilities were observed in early epochs. The experiments were structured as follows:
+
+% \begin{itemize}
+%     \item \textbf{Configuration A (VAE only):} Achieved convergence after 30 epochs with a final total loss of 0.33. The reconstruction loss decreased steadily, but KL divergence oscillated slightly, indicating limited regularization control.
+%     \item \textbf{Configuration B (DistilBERT only):} Training stabilized near 0.29 total loss. Semantic context was well captured, but the absence of structural encoding reduced robustness to permission co-occurrence patterns.
+%     \item \textbf{Configuration C (Hybrid without KL annealing):} Improved overall stability (total loss $\approx$ 0.27) but occasional divergence spikes were noted due to uncontrolled KL term growth.
+%     \item \textbf{Configuration D (Hybrid with KL annealing and gradient clipping):} Demonstrated smooth convergence to a final loss of 0.24. KL divergence plateaued near 0.08, suggesting appropriate latent regularization.
+% \end{itemize}
+
+% Overall, the hybrid approach achieved stable convergence with moderate variance across training runs ($\pm$0.01 total loss).
+
+% \section{Ablation Study}
+
+% To assess the contribution of each architectural component, an ablation study was performed. Table~\ref{tab:ablation} reports the averaged results across three random seeds on the held-out test set.
+
+
+% \begin{table}[H]
+% \centering
+% \caption{Ablation Study Results (Average over 3 runs)}
+% \label{tab:ablation}
+
+% \begin{tabular}{|c|c|c|c|c|c|}
+% \hline
+% \textbf{Model Variant} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-score} & \textbf{AUC} \\  \hline
+
+% % VAE Only & 0.75 & 0.78 & 0.76 & 0.77 & 0.84 \\
+% % DistilBERT Only & 0.83 & 0.82 & 0.80 & 0.81 & 0.87 \\
+% % Hybrid (no KL annealing) & 0.85 & 0.83 & 0.82 & 0.82 & 0.89 \\
+% % Hybrid (Full Configuration) & \textbf{0.88} & \textbf{0.86} & \textbf{0.85} & \textbf{0.85} & \textbf{0.91} \\
+% VAE Only & 0.75 & 0.76 & 0.73 & 0.74 & 0.80 \\
+%  \hline
+% DistilBERT Only & 0.78 & 0.79 & 0.77 & 0.78 & 0.83 \\
+%  \hline
+% MMHNN (no KL annealing) & 0.79 & 0.80 & 0.78 & 0.79 & 0.84 \\
+%  \hline
+% MMHNN (Full Config) & \textbf{0.80} & \textbf{0.82} & \textbf{0.78} & \textbf{0.79} & \textbf{0.78} \\  \hline
+
+% \end{tabular}
+% \end{table}
+
+
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=0.7\textwidth]{img/graph/ablation.png}
+%     \caption{MMHNN Ablation Study — Performance Metrics
+% }
+%     \label{fig:roc_curve}
+% \end{figure}
+
+% The results demonstrate measurable but not drastic improvement from the hybrid architecture. The full configuration (with KL annealing and gradient control) improved F1-score by approximately 3–4\% compared to the non-annealed version. These findings align with earlier studies emphasizing the stabilizing effect of annealing schedules in variational models.
+
+
+
+

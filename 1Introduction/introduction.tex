@@ -1,0 +1,93 @@
+\chapter{INTRODUCTION}
+
+\section{Background}
+Mobile applications have become an essential part of daily life, offering services ranging from messaging and social networking to banking, health monitoring, and entertainment. The widespread adoption of smartphones and app ecosystems has enabled rapid service innovation, but it has also introduced complex privacy and security challenges. Android’s permission model is the primary mechanism by which applications request access to sensitive device resources (e.g., location, contacts, camera, microphone) and user data; these permissions are declared in an app’s manifest and may be granted at install time or at runtime depending on the permission type and Android version \cite{androidPermissionsDevs, androidAOSPpermissions, androidDeclarePermissions}. Prior work has shown that users frequently grant permissions without fully understanding their implications, and developers vary widely in how transparently they justify permission usage \cite{felt2011android, chen2023deepvuln, peng2012using}.
+
+Classical security analyses of mobile apps have focused on detecting malicious behavior through static- or dynamic-analysis techniques and signature- or behavior-based detection systems \cite{enck2014, li2017, mitchell2020guardml}. While these approaches successfully identify malware and certain classes of runtime misbehavior, they do not directly address privacy risk arising from legitimate applications that request excessive or unjustified permissions. Privacy risk is multi-faceted: it depends not only on which permissions an app requests, but also on the app’s stated functionality, developer practices, and how metadata (genre, rating, version history) correlates with permission use \cite{zhu2019, ferreira2020}. Recent advances in machine learning and natural language processing enable combined analysis of structured metadata and unstructured textual content (e.g., app descriptions, privacy policy excerpts), which can reveal misalignments between requested permissions and declared functionality \cite{park2024multimodal, Zilliz2024}.
+
+Variational Autoencoders (VAEs) and other latent-variable models have demonstrated strong performance for anomaly detection and representation learning in heterogeneous data domains \cite{vandeKleut2021, an_variational_2015}, while transformer-based language models (including DistilBERT) provide powerful semantic encodings for short textual documents and descriptions \cite{Zilliz2024, sanh_distilbert_2020}. A multi-modal approach that fuses latent structural representations of permissions and metadata with semantic embeddings from descriptions has the potential to produce more reliable, interpretable, and scalable privacy risk assessments than single-modality systems.
+
+\section{Motivation}
+Despite platform-level controls and developer guidance, applications continue to request permissions that are disproportionate to their stated features or user expectations. Large-scale studies and industry reports indicate persistent privacy threats originating from excessive data collection, third-party analytics, and opaque developer practices \cite{ZimperiumRiskAssessment2024, kaseb2022}. Manual review of millions of apps is infeasible for marketplaces and regulators, and most existing automated tools are optimized for malware detection rather than nuanced privacy evaluation \cite{enck2014, zhu2019}.
+
+There is a practical and academic need for automated tools that reason about the contextual justification for requested permissions (i.e., do the permissions match stated functionality?), detect structural anomalies across permission and metadata vectors, and present interpretable outputs suitable for stakeholders (users, developers, enterprises, and regulators). Combining representation learning for permission structures (to identify anomalous or rare permission profiles) with semantic analysis (to verify description-permission alignment) addresses this gap and improves the fidelity of privacy risk classification in real-world app ecosystems \cite{park2024multimodal, Zilliz2024}.
+
+Additionally, regional app ecosystems (including Nepali-centered apps) may exhibit distinct patterns of permission usage and metadata characteristics that are underrepresented in global datasets. Building and validating a labeled dataset that reflects local app behavior strengthens the relevance and fairness of any automated privacy assessment tool.
+
+\section{Problem Statement}
+Applications frequently request permissions that exceed operational requirements or lack clear justification in their descriptions and metadata, creating privacy risks that are not captured by malware-focused detectors or simple permission-count heuristics. Current automated analyses generally fall short in one or more of the following aspects:
+
+\begin{itemize}
+\item Reliance on single-modality analysis (either structural or textual) that misses cross-modal inconsistencies \cite{zhu2019, park2024multimodal}.
+\item Lack of labelled datasets that codify privacy risk levels for supervised evaluation, especially for regionally focused applications \cite{androzoo, krifyCategory2024}.
+\item Limited interpretability for stakeholders who must decide whether permission requests are justified or risky under regulatory frameworks such as GDPR and CCPA \cite{GDPR2024, CCPA2024}.
+\end{itemize}
+
+This thesis formulates the problem as supervised privacy risk classification: given an Android application’s manifest-declared permissions, metadata, and textual description, predict a privacy risk label that reflects the likelihood of unjustified or excessive data access. The challenge lies in designing a multimodal model that captures latent structural anomalies in permission vectors, understands semantic alignment between descriptions and permissions, and fuses these signals into a robust, interpretable classifier suitable for evaluation and deployment.
+
+\section{Objectives}
+The objectives of this thesis are:
+
+\begin{enumerate}
+\item To construct and validate a manually labeled dataset of Android applications (with regional representation).
+% and to evaluate the MM-HNN using standard supervised metrics (accuracy, precision, recall, F1-score, AUC), baseline comparisons, and ablation studies.
+
+\item To develop a supervised multimodal hybrid neural network (MM-HNN)
+% that integrates a VAE-based latent representation of permissions and metadata with a DistilBERT-based semantic encoder for app descriptions, and that includes a classification head 
+to predict privacy risk levels.
+
+
+\end{enumerate}
+
+\section{Scope}
+The scope of this research is defined as follows:
+
+\begin{itemize}
+\item \textbf{Data sources and modalities:} The study focuses on static, publicly available app metadata — manifest-declared permissions, app descriptions, genre, developer information, content ratings, and other Play Store metadata accessible without dynamic instrumentation \cite{androidPermissionsDevs, googlePlayUserData2024}.
+\item \textbf{Modeling approach:} The thesis develops and evaluates a supervised multimodal model combining a VAE for structural feature learning and a DistilBERT encoder for semantic feature extraction. Fusion strategies (e.g., concatenation + classifier, late fusion) and classification head designs are explored and compared.
+\item \textbf{Evaluation:} Performance is evaluated using labeled data and standard classification metrics, including ablation studies to measure the contribution of each modality. 
+% The research includes qualitative analysis (case studies, latent-space visualizations) to aid interpretability.
+\item \textbf{Excluded topics:} The thesis does not perform dynamic runtime analysis (network traffic inspection, dynamic taint tracking), on-device instrumentation, or active privacy policy scraping beyond publicly available descriptions and metadata. Detection or mitigation of adversarial evasion techniques is considered out of scope for the core contribution.
+\end{itemize}
+
+\section{Potential Applications}
+The MM-HNN framework can serve multiple stakeholders in the mobile ecosystem:
+
+\begin{itemize}
+\item \textbf{End users:} Provide clearer, data-driven privacy risk indicators at install-time or in app marketplaces to inform user consent \cite{privacyDashboard2021}.
+\item \textbf{App stores and marketplace operators:} Automate preliminary privacy vetting and flagging of apps whose permission requests are inconsistent with descriptions or industry norms \cite{googlePlayDeveloperPolicyCenter, googlePlayUserData2024}.
+\item \textbf{Developers:} Offer pre-submission privacy checks that suggest permission minimization or improved documentation to reduce rejection risk and enhance user trust \cite{googlePrepareAppReview, iubendaPrivacyPolicyAndroid}.
+\item \textbf{Enterprises and IT administrators:} Screen third-party apps for deployment on corporate devices to limit privacy and compliance exposure.
+\item \textbf{Regulators and auditors:} Support large-scale compliance assessments with privacy regulations such as GDPR and CCPA by surfacing apps with potentially non-compliant permission practices \cite{GDPR2024, CCPA2024}.
+\item \textbf{Security researchers:} Enable systematic study of privacy trends and longitudinal analysis of permission misuse across categories and regions \cite{park2024multimodal, ZimperiumRiskAssessment2024}.
+\end{itemize}
+
+\section{Originality of the Thesis}
+
+This thesis introduces a \textbf{supervised, multi-modal, and data-driven framework} for assessing privacy risks in Android applications. The originality of this work lies in several key aspects:
+
+\begin{enumerate}
+    \item \textbf{Manually Labeled Privacy Risk Dataset:} A primary contribution is the creation of a validated dataset of Android applications annotated with privacy risk labels. This dataset enables supervised training and provides a benchmark for future research in mobile privacy assessment.
+    
+    \item \textbf{Supervised Multi-Modal Learning:} The proposed MM-HNN framework integrates \textbf{Variational Autoencoders (VAE)} to extract structured features from app metadata and permissions, along with \textbf{DistilBERT} embeddings for semantic analysis of textual descriptions and privacy policies. A classification layer combines these modalities to predict discrete privacy risk levels.
+    
+    \item \textbf{Risk Classification and Confidence Scores:} Unlike purely anomaly-based methods, this framework produces both privacy risk classes and associated confidence scores, offering actionable insights for users, developers, and regulators.
+    
+    \item \textbf{Scalability and Practical Applicability:} By operating on static app information, the framework can efficiently evaluate large-scale datasets while maintaining the reliability of predictions through supervised learning on manually labeled data.
+\end{enumerate}
+
+In summary, this research contributes a \textbf{novel, practical, and supervised approach} to Android privacy risk assessment by combining manual labeling, multi-modal feature extraction, and classification-based risk prediction. This approach addresses gaps in existing methodologies and establishes a foundation for automated, large-scale privacy evaluation in mobile ecosystems.
+
+
+\section{Organization of the Report}
+This thesis is structured into the following chapters:
+\begin{itemize}
+
+\item \textbf{Chapter 1: Introduction} – This chapter provides an overview of the research background, motivation, problem statement, objectives, scope, potential applications, and the originality of the study.
+\item \textbf{Chapter 2: Literature Review} – It examines existing approaches in mobile application security, highlighting their limitations and identifying the research gaps that the proposed framework addresses.
+\item \textbf{Chapter 3: Methodology} – This chapter details the design, implementation, and technical aspects of the MM-HNN framework, including data collection, model training, and evaluation techniques.
+\item \textbf{Chapter 4: Results} – This chapter presents the evaluation of the framework, including performance metrics, training outcomes, and analyses of both optimal and worst-case scenarios.
+\item \textbf{Chapter 5: Discussion and Analysis} – This chapter provides an in-depth interpretation of the results, discusses their implications, and compares the findings with existing approaches.
+\item \textbf{Chapter 6: Conclusion and Future Work} – This chapter summarizes the key research findings, discusses the contributions of the study, and suggests potential areas for future exploration and enhancements.
+
+\end{itemize}

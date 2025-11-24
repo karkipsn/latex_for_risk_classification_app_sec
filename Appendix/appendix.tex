@@ -1,0 +1,75 @@
+\section{Thesis Schedule}
+
+\begin{figure}[h!]
+\centering
+\rotatebox{90}{
+\begin{ganttchart}[
+    x unit=0.36mm,                     % smaller horizontal unit
+    y unit chart=5.2mm,                % slightly compact vertical
+    time slot format=isodate,
+    hgrid,
+    vgrid={*1{blue!20}},
+    today=2025-11-21,
+    today rule/.style={draw=black, thick},
+    today label=Today,
+    today label font=\small\bfseries,
+    bar height=0.6,
+    progress label text={},
+    bar/.append style={fill=blue!60},
+    bar incomplete/.append style={fill=white!20},
+    group incomplete/.append style={fill=white!20},
+    milestone/.append style={fill=red!70},
+    group left shift=0,
+    group right shift=0
+]{2024-12-10}{2025-11-30}
+
+% --- Title Calendar (2-month groupings) ---
+\gantttitlecalendar{year, month=none} \\
+\gantttitle{Dec -- Jan}{53}
+\gantttitle{Feb -- Mar}{59}
+\gantttitle{Apr -- May}{61}
+\gantttitle{Jun -- Jul}{62}
+\gantttitle{Aug -- Sep}{61}
+\gantttitle{Oct -- Nov}{61} \\
+
+% === PHASE 1 ===
+\ganttgroup{Planning Phase}{2024-12-10}{2025-01-05} \\
+\ganttbar[progress=100]{Topic Selection}{2024-12-10}{2024-12-28} \\
+\ganttbar[progress=100]{Proposal }{2024-12-28}{2024-12-30} \\
+\ganttbar[progress=100]{Literature Review}{2025-01-01}{2025-01-05} \\
+
+% === PHASE 2 ===
+\ganttgroup{Data Preparation}{2025-01-05}{2025-02-01} \\
+\ganttbar[progress=100]{Crawling  Data}{2025-01-05}{2025-01-15} \\
+\ganttbar[progress=100]{Preprocessing }{2025-01-15}{2025-02-01} \\
+
+% === PHASE 3 ===
+\ganttgroup{Model}{2025-02-01}{2025-03-15} \\
+\ganttbar[progress=100]{VAE Implementation}{2025-02-01}{2025-02-25} \\
+\ganttbar[progress=100]{BERT Fine-Tuning}{2025-02-10}{2025-03-05} \\
+\ganttbar[progress=90]{Fusion and Risk }{2025-02-22}{2025-03-15} \\
+
+% === GAP ===
+\ganttbar[progress=100, bar/.append style={fill=gray!40}]{Pause / Gap}{2025-03-16}{2025-08-15} \\
+
+% === CONTINUATION ===
+\ganttbar[progress=100, bar/.append style={fill=green!60}]{ (Resumed)}{2025-08-16}{2025-10-10} \\
+
+% === EVALUATION ===
+\ganttgroup{Evaluation}{2025-10-01}{2025-10-25} \\
+\ganttbar[progress=100, bar/.append style={fill=green!60}]{Performance}{2025-10-01}{2025-10-10} \\
+\ganttbar[progress=90, bar/.append style={fill=green!60}]{Validation}{2025-10-11}{2025-10-15} \\
+\ganttbar[progress=90, bar/.append style={fill=green!60}]{Refinement}{2025-10-16}{2025-10-25} \\
+
+% === MILESTONE ===
+\ganttmilestone{Prefinal Defense}{2025-10-20} \\
+
+% === DOCUMENTATION ===
+\ganttgroup{Documentation}{2025-10-20}{2025-11-30} \\
+\ganttbar[progress=80]{Draft Report}{2025-11-20}{2025-11-10} \\
+\ganttbar[progress=70]{Final Submission}{2025-11-21}{2025-11-30} \\
+
+\end{ganttchart}
+}
+\caption{Final thesis timeline}
+\end{figure}

@@ -1,0 +1,60 @@
+This is BibTeX, Version 0.99d (TeX Live 2025)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+A level-1 auxiliary file: 0ACover/0cover.aux
+A level-1 auxiliary file: 0ACover/1title.aux
+A level-1 auxiliary file: 0ACover/6acknowledgement.aux
+A level-1 auxiliary file: 0HAbstract/abstract.aux
+A level-1 auxiliary file: 1Introduction/introduction.aux
+A level-1 auxiliary file: 2Literaturereview/literaturereview.aux
+A level-1 auxiliary file: 3Methodology/methodology.aux
+A level-1 auxiliary file: 4Results/results.aux
+A level-1 auxiliary file: 5DiscussionAndAnalysis/discussionAndAnalysis.aux
+A level-1 auxiliary file: 6FutureEnhancement/limitations.aux
+A level-1 auxiliary file: 7Conclusion/conclusion.aux
+The style file: unsrt.bst
+Database file #1: References/references.bib
+Warning--entry type for "brannon2025" isn't style-file defined
+--line 471 of file References/references.bib
+You've used 82 entries,
+            1791 wiz_defined-function locations,
+            850 strings with 15566 characters,
+and the built_in function-call counts, 16965 in all, are:
+= -- 1447
+> -- 736
+< -- 13
++ -- 286
+- -- 204
+* -- 907
+:= -- 2600
+add.period$ -- 246
+call.type$ -- 82
+change.case$ -- 82
+chr.to.int$ -- 0
+cite$ -- 82
+duplicate$ -- 773
+empty$ -- 1849
+format.name$ -- 204
+if$ -- 3886
+int.to.chr$ -- 0
+int.to.str$ -- 82
+missing$ -- 50
+newline$ -- 413
+num.names$ -- 82
+pop$ -- 365
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 415
+stack$ -- 0
+substring$ -- 832
+swap$ -- 211
+text.length$ -- 13
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 161
+width$ -- 84
+write$ -- 859
+(There was 1 warning)

@@ -1,0 +1,37 @@
+\chapter{LIMITATIONS AND FUTURE WORK}
+
+\subsection{Limitations}
+
+Despite achieving competitive performance, this research has several inherent limitations that warrant acknowledgment:
+
+\textbf{Static Analysis Constraint:} The framework analyzes only manifest-declared permissions and textual descriptions, lacking runtime behavior analysis. Malicious applications employing dynamic code loading, reflection-based permission requests, or delayed malicious behavior remain undetected through static analysis alone.
+
+\textbf{Dataset Scale and Generalization:} While the dataset underwent rigorous curation and balanced sampling, the scale limits comprehensive coverage of the diverse Android application ecosystem. Applications from specific genres, regional variations, and emerging categories may exhibit distribution shift affecting model generalization.
+
+\textbf{Language Dependency:} The DistilBERT component restricts analysis to English-language descriptions, excluding applications with non-English metadata. This constraint limits applicability in multilingual app markets and regional contexts where vernacular descriptions predominate.
+
+\textbf{Manual Feature Engineering:} Genre-based weighting relies on manually designed heuristics rather than learned representations, introducing potential bias and limiting adaptability to evolving application categories and emerging genres.
+
+\textbf{Adversarial Robustness:} The framework's vulnerability to adversarial manipulation—such as deliberately crafted descriptions designed to evade detection or permission obfuscation techniques—has not been comprehensively evaluated. Sophisticated adversaries with knowledge of the model architecture could potentially exploit weaknesses.
+
+\subsection{Future Work}
+
+Several promising directions for extending and enhancing this research are identified:
+
+% \textbf{Dynamic Analysis Integration:} Incorporating runtime behavior features through sandboxed execution environments would complement static analysis. Features including API call sequences, network traffic patterns, resource consumption metrics, and actual permission usage could substantially improve detection of sophisticated malicious behavior.
+
+\textbf{Multilingual Support:} Replacing DistilBERT with multilingual transformer models (mBERT, XLM-RoBERTa) would enable analysis across language boundaries. Cross-lingual transfer learning could leverage high-resource language annotations to improve performance on low-resource languages.
+
+% \textbf{Graph Neural Network Architecture:} Modeling applications and permissions as bipartite graphs with Graph Convolutional Networks could capture complex co-occurrence patterns and permission dependencies. This approach may better represent the relational structure inherent in permission systems.
+
+\textbf{Continual Learning Framework:} Implementing online learning mechanisms with catastrophic forgetting prevention (e.g., Elastic Weight Consolidation) would enable model adaptation to evolving threat landscapes and emerging application patterns without requiring complete retraining.
+
+\textbf{Adversarial Training:} Enhancing robustness through adversarial training on synthetically generated evasion examples could improve resilience against intentional manipulation while maintaining clean accuracy on legitimate applications.
+
+\textbf{Explainability Enhancement:} Developing interpretability mechanisms including attention visualization, permission importance ranking, and counterfactual explanations would increase model transparency and facilitate adoption in security-critical deployment contexts.
+
+These future directions offer pathways for advancing both the theoretical foundations and practical applicability of automated privacy risk assessment in mobile application ecosystems.
+
+% ============================================================================
+% END OF LIMITATIONS AND FUTURE WORK
+% ============================================================================

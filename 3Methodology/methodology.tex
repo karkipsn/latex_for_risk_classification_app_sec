@@ -1,0 +1,1160 @@
+\chapter{METHODOLOGY}
+
+\section{Theoretical Formulations}
+
+This section presents the theoretical foundation of the proposed Multi-Modal Hybrid Neural Network (MM-HNN) used for privacy risk classification of Android applications. The framework integrates structural, semantic, and contextual information obtained from permissions, metadata vectors, genre , and application descriptions. The model consists of three major components: (i) a Variational Autoencoder (VAE) for structural risk representation, (ii) a DistilBERT-based contextual encoder, and (iii) a multimodal fusion classifier.
+
+\subsection{Basic Concept of the Chosen Model}
+
+The Variational Autoencoder (VAE) is employed to learn a compact latent representation of high-dimensional permission and metadata vectors. VAEs provide a probabilistic generative framework that captures the underlying structure of the input distribution while encouraging smooth latent manifolds. This structural representation is crucial for detecting abnormal or excessive permission combinations.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/Graphics/vae_archi.png}
+    \caption{Variational Autoencoder Architecture}
+    \label{fig:vae-architecture}
+\end{figure}
+
+Parallel to the VAE, DistilBERT is utilized to extract contextual and semantic features from the application descriptions. DistilBERT preserves the linguistic reasoning capability of BERT while being computationally efficient, making it suitable for large-scale app analysis. It produces sentence-level embeddings that represent the functional intent of the application. 
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/Graphics/distilbert_archi.png}
+    \caption{DistilBERT Architecture}
+    \label{fig:distilBERT-architecture}
+\end{figure}
+
+The MM-HNN framework fuses both modalities—structural latent features and semantic embeddings—along with a manually constructed genre-weight feature to produce a unified risk classification. This multimodal approach enables the system to jointly evaluate the necessity, justification, and sensitivity of permissions requested by the application.
+
+\subsection{Major Benefits of the Chosen Techniques}
+
+\begin{itemize}
+    \item \textbf{Variational Autoencoder:}
+    \begin{itemize}
+        \item Learns smooth and continuous latent representations suitable for anomaly detection.
+        \item Performs dimensionality reduction while preserving structural relationships among permissions.
+        \item Captures latent privacy risk patterns beyond raw permission counts.
+    \end{itemize}
+
+    \item \textbf{DistilBERT Encoder:}
+    \begin{itemize}
+        \item Extracts deep contextual information from app descriptions.
+        \item Captures semantic consistency between app purpose and requested permissions.
+        \item Lightweight compared to BERT, reducing computational complexity.
+    \end{itemize}
+
+    \item \textbf{Multimodal Fusion:}
+    \begin{itemize}
+        \item Integrates structural anomalies with contextual meaning.
+        \item Provides more robust classification than single-modality models.
+        \item Enables detection of over-privileged apps even when permissions seem normal but contextually unjustified.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Assumptions Considered}
+
+\begin{itemize}
+    \item The manifest-declared permissions reflect the functional behavior of the application.
+    \item App descriptions provided in the Google Play Store represent the developer’s declared intent.
+    \item The dataset of Nepali-region Android apps is representative of the general permission–usage patterns.
+    \item Permissions are treated as binary features (requested or not requested).
+    \item Genre information is assumed to influence the permission justification (e.g., health apps may reasonably request sensors).
+    \item Labeled risk categories (Low, Moderate, High, Critical) accurately reflect expert-annotated privacy sensitivity.
+\end{itemize}
+
+
+\section{Mathematical Modeling}
+
+\begin{enumerate}
+    \item \textbf{Preprocessing of Raw Data:}  
+    Raw features include permissions, metadata, descriptions, and genre information. These are transformed into ML-ready vectors.
+
+    \begin{enumerate}
+        \item \textit{Binary Encoding of Permissions:}  
+        Each manifest-declared permission is encoded as a binary feature:
+        \begin{equation}
+        p_j =
+        \begin{cases}
+        1, & \text{if permission } j \text{ is requested} \\
+        0, & \text{otherwise}
+        \end{cases}
+        \end{equation}
+
+        where $j = 1,2,\dots,P$ and $P$ is the total number of permission types.
+
+        \item \textit{Metadata Normalization:}  
+        Continuous metadata features (e.g., downloads, ratings) are normalized:
+        \begin{equation}
+        \hat{m}_k = \frac{m_k - \min(m_k)}{\max(m_k) - \min(m_k)}
+        \end{equation}
+
+        where $k = 1,2,\dots,K$ and $K$ is the total number of metadata features.
+
+        \item \textit{Genre Weighting:}  
+        Each app genre is assigned a sensitivity weight:
+        \begin{equation}
+        g_i = \text{predefined sensitivity weight for app } i
+        \end{equation}
+
+        where $i = 1,2,\dots,N$ and $N$ is the total number of apps.
+
+        \item \textit{Structural Feature Vector:}  
+        Combine permissions, normalized metadata, and genre weight:
+        \begin{equation}
+        \mathbf{x}_{struct} = [\mathbf{p}, \hat{\mathbf{m}}, g]
+        \end{equation}
+
+        The structural vector lies in:
+        \begin{equation}
+        \mathbf{x}_{struct} \in \mathbb{R}^{P+K+1}
+        \end{equation}
+    \end{enumerate}
+
+    \item \textbf{VAE Module: Structural Feature Modeling}  
+    The VAE maps $\mathbf{x}_{struct}$ to a latent representation $\mathbf{z}$.
+
+    \begin{enumerate}
+        \item \textit{Encoder:}  
+        Produces mean and log-variance vectors:
+        \begin{equation}
+        \mu = f_\mu(\mathbf{x}_{struct}), \qquad 
+        \log\sigma^2 = f_{\log\varphi}(\mathbf{x}_{struct})
+        \end{equation}
+
+        \item \textit{Reparameterization Trick:}  
+        Samples latent vector $\mathbf{z}$:
+        \begin{equation}
+        \mathbf{z} = \mu + \epsilon \cdot \sigma, 
+        \qquad \epsilon \sim \mathcal{N}(0, I)
+        \end{equation}
+
+        \item \textit{Decoder:}  
+        Reconstructs input vector:
+        \begin{equation}
+        \hat{\mathbf{x}}_{struct} = f_{dec}(\mathbf{z})
+        \end{equation}
+
+        \item \textit{VAE Loss Function:}  
+        \begin{equation}
+        \mathcal{L}_{VAE} =
+        \sum_i x_i \log \hat{x}_i + (1-x_i)\log(1-\hat{x}_i)
+        + \beta \left( -\frac{1}{2} \sum_j (1 + \log \sigma_j^2 - \mu_j^2 - \sigma_j^2) \right)
+        \end{equation}
+    \end{enumerate}
+
+    \item \textbf{DistilBERT Semantic Module}  
+    Converts tokenized app descriptions into semantic embeddings:
+    \begin{equation}
+    \mathbf{e}_{bert} = \text{DistilBERT}(\text{tokenized description})
+    \end{equation}
+
+    \item \textbf{Fusion Layer}  
+    Combines structural latent, semantic embedding, and genre weight:
+    \begin{equation}
+    \mathbf{h}_{fusion} = [\mathbf{z}, \mathbf{e}_{bert}, g]
+    \end{equation}
+
+    The fusion network outputs logits:
+    \begin{equation}
+    \mathbf{o} = f_{fusion}(\mathbf{h}_{fusion})
+    \end{equation}
+
+    \item \textbf{Post-Processing}  
+    \begin{enumerate}
+        \item Convert logits to probabilities:
+        \begin{equation}
+        \hat{y}_c = \frac{\exp(o_c)}{\sum_{i=1}^{4} \exp(o_i)}, \qquad c=1,2,3,4
+        \end{equation}
+
+        \item Predicted risk category:
+        \begin{equation}
+        \text{Predicted Risk} = \arg\max_c \hat{y}_c
+        \end{equation}
+    \end{enumerate}
+\end{enumerate}
+
+
+
+\section{System Block Diagram}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/Graphics/hhmmm_archi.png}
+    \caption{System Block DIagram of MMHNN Architecture }
+    \label{fig:block_diagram}
+\end{figure}
+
+Figure~\ref{fig:block_diagram} illustrates the overall workflow of the proposed Multi-Modal Hybrid Neural Network (MM-HNN) for Android application privacy risk classification. The system integrates preprocessing, structural and semantic feature extraction, multimodal fusion, and final risk prediction in a cohesive pipeline.
+
+\subsection{Input Stage}
+
+The input to the system consists of a labeled dataset of Android applications, including:
+\begin{itemize}
+    \item Manifest-declared permissions
+    \item Application metadata (install count, size, content rating, etc.)
+    \item Application description text
+    \item Genre information
+\end{itemize}
+
+During preprocessing, binary encoding is applied to permission features, continuous metadata is normalized, genre information is transformed into a scalar weight, and application descriptions are tokenized for text embedding.
+
+\subsection{Intermediate Stages}
+\begin{enumerate}
+
+\item \textbf{Structural Module (VAE)}
+The Variational Autoencoder (VAE) encodes the high-dimensional structural input vector into a latent representation $\mathbf{z}$. During training, the decoder reconstructs the input to enforce a smooth latent manifold. The latent vector captures structural privacy risk patterns, including abnormal or excessive permission combinations.
+
+\item \textbf{Semantic Module (DistilBERT)}
+DistilBERT processes the tokenized application descriptions to produce contextual embeddings $\mathbf{e}_{bert}$. These embeddings capture semantic consistency between declared app functionality and requested permissions, providing complementary information to the structural features.
+
+\item \textbf{Fusion Layer}
+
+The latent vector $\mathbf{z}$, semantic embedding $\mathbf{e}_{bert}$, and genre weight $g$ are concatenated to form a combined feature vector. This vector passes through multiple dense layers with ReLU activation and dropout, allowing the model to learn complex interactions between structural and contextual information.
+
+\item \textbf{Output Stage}
+
+The fusion classifier outputs logits corresponding to four risk categories: \textit{Low}, \textit{Moderate}, \textit{High}, and \textit{Critical}. During training, both the VAE reconstruction/KL loss and the supervised cross-entropy classification loss are optimized. The system is evaluated using standard metrics including accuracy, F1-score, AUC, and confusion matrices.
+\end{enumerate}
+
+\subsection{Training, Validation, and Testing Phases}
+
+\begin{itemize}
+    \item \textbf{Training Phase:} End-to-end backpropagation with joint VAE and classifier losses to learn structural and semantic representations.
+    \item \textbf{Validation Phase:} Forward pass through the network to evaluate intermediate performance and tune hyperparameters.
+    \item \textbf{Testing Phase:} Forward pass for final privacy risk predictions, with evaluation using the chosen metrics.
+\end{itemize}
+
+% \begin{figure}[h!]
+% \centering
+% \fbox{\includegraphics[width=0.9\linewidth]{block_diagram_placeholder.png}}
+% \caption{System block diagram of the MM-HNN framework, showing preprocessing, structural and semantic modules, fusion, and risk classification.}
+% \label{fig:block_diagram}
+% \end{figure}
+
+
+\section{Instrumentation Usage}
+
+\subsection{Hardware Tools}
+The project utilized both local and remote computational resources:
+\begin{itemize}
+\item \textbf{Development Environment:} Local systems with adequate memory, multi-core processors, and GPU acceleration for prototyping and debugging.
+\item \textbf{High-Performance Computing:} Remote GPU servers for computationally intensive training, reducing training time and enabling large-scale experimentation.
+\item \textbf{Testing Devices:} Multiple Android devices and emulators for testing application functionality, compatibility, and performance across various operating environments.
+\end{itemize}
+
+\subsection{Software Tools}
+A range of software frameworks and utilities supported model design, data handling, and visualization:
+\begin{itemize}
+\item \textbf{Model Development:} Python-based deep learning frameworks (TensorFlow, PyTorch) for implementing VAE and DistilBERT components.
+\item \textbf{Data Processing and Visualization:} Python libraries for automated web-scraping and preprocessing pipelines; Matplotlib and Plotly for interpreting model performance metrics.
+\item \textbf{Reproducibility and Deployment:} Docker for consistent execution across environments; cloud service interfaces for scalability and remote experimentation.
+\end{itemize}
+
+
+\section{Dataset Overview and Relevance}
+
+Android applications represent a critical security challenge in the mobile ecosystem, with over 3 million applications available on the Google Play Store \cite{statista2024}. While existing research has focused primarily on binary malware classification \cite{arp2014drebin}, there exists a significant gap in nuanced risk assessment that considers the spectrum of privacy and security concerns present in legitimate applications. Our research addresses this gap by constructing a multi-dimensional dataset that captures both \textit{structural} (permission-based) and \textit{contextual} (description-based) risk indicators.
+
+\subsection{Dataset Relevance}
+
+The constructed dataset is specifically relevant for the following reasons:
+
+\begin{enumerate}
+    \item \textbf{Granular Risk Assessment}: Unlike binary malware datasets (e.g., Drebin \cite{arp2014drebin}, AndroZoo \cite{allix2016androzoo}), our dataset provides three-level risk categorization (Low, Medium, High), enabling fine-grained security analysis.
+    
+    \item \textbf{Multimodal Features}: The dataset integrates permissions, genre information, textual descriptions, and metadata, supporting multimodal machine learning approaches that leverage complementary signals.
+    
+    \item \textbf{Real-World Applicability}: Data collected from the Google Play Store represents actual applications accessible to end-users, ensuring ecological validity for practical deployment.
+    
+    \item \textbf{Privacy-Focused}: Emphasizes privacy and permission anomalies rather than solely malicious code, addressing the growing concern of data harvesting by legitimate applications \cite{reardon2019apps}.
+\end{enumerate}
+
+
+
+\subsection{Dataset Statistics}
+
+The final validated dataset comprises \textbf{3,529 Android applications} collected from the Google Play Store, with the following characteristics:
+
+\begin{table}[H]
+\centering
+\caption{Dataset Composition and Statistics}
+\label{tab:dataset_stats}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Characteristic} & \textbf{Value} \\
+\hline
+Total Applications Collected & 4,141 \\ \hline
+High-Confidence Samples & 3,529 \\ \hline
+Unique Permissions & 166 \\ \hline
+Unique Genres & 13 \\ \hline
+Training Set & 2,469 (70.0\%) \\ \hline
+Validation Set & 530 (15.0\%) \\ \hline
+Test Set & 530 (15.0\%) \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Risk Label Distribution (Initial Collection)}
+\label{tab:initial_label_dist}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Label} & \textbf{Value} \\ \hline
+Low Risk & 1,735 (41.9\%) \\ \hline
+Medium Risk & 1,578 (38.1\%) \\ \hline
+High Risk & 828 (20.0\%) \\ \hline
+\textbf{Total} & \textbf{4,141 (100\%)} \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Risk Label Distribution (High-Confidence Dataset)}
+\label{tab:final_label_dist}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Label} & \textbf{Value} \\ \hline
+Low Risk & 1,707 (48.4\%) \\ \hline
+Medium Risk & 938 (26.6\%) \\ \hline
+High Risk & 884 (25.0\%) \\ \hline
+\textbf{Total} & \textbf{3,529 (100\%)} \\ \hline
+\end{tabular}
+\end{table}
+
+
+\subsection{Dataset Collection Methodology}
+
+Data collection was performed through automated scraping of publicly available metadata from the Google Play Store. The procedure adheres to ethical guidelines and terms of service, collecting only public information without requiring user authentication or accessing personal data.
+
+\begin{enumerate}
+  
+\item \textbf{Collection Pipeline}
+
+The data collection pipeline consists of four stages:
+
+\begin{enumerate}
+    \item \textbf{Genre-Stratified Sampling}: Applications were sampled across 13 major genre categories to ensure diverse representation (Table~\ref{tab:genre_distribution}).
+    
+    \item \textbf{Metadata Extraction}: For each application, the following metadata was collected:
+    \begin{itemize}
+        \item Package name and version information
+        \item Application title and description
+        \item Genre classification
+        \item Permission declarations
+        \item Download counts and user ratings
+        \item Developer information
+        \item Content rating
+        \item Pricing information
+    \end{itemize}
+    
+    \item \textbf{Quality Filtering}: Applications with incomplete metadata (e.g., missing descriptions or permission information) were excluded.
+    
+    \item \textbf{Temporal Consistency}: All data was collected within a 30-day window (November 2025) to ensure temporal consistency and minimize version-related discrepancies.
+\end{enumerate}
+
+\item \textbf{Automated Collection Framework}
+The collection framework was implemented in Python using the following components:
+
+\begin{itemize}
+    \item \texttt{google-play-scraper} library for metadata retrieval
+    \item Rate-limiting mechanisms (1 request per second) to respect server constraints
+    \item Retry logic with exponential backoff for handling transient failures
+    \item JSON-based storage for structured data persistence
+\end{itemize}
+\end{enumerate}
+
+
+
+\subsection{Genre Distribution}
+
+Applications were sampled from 13 genre categories based on Google Play Store classifications. Table~\ref{tab:genre_distribution} presents the distribution across genre categories, demonstrating balanced representation of application types.
+
+\begin{table}[htbp]
+\centering
+\caption{Genre Distribution in Dataset}
+\label{tab:genre_distribution}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Genre Category} & \textbf{Count} & \textbf{Percentage} \\ \hline
+Gaming & 1,755 & 42.4\% \\ \hline
+Health \& Fitness & 720 & 17.4\% \\ \hline
+Social \& Communication & 341 & 8.2\% \\ \hline
+Lifestyle \& Personal & 277 & 6.7\% \\ \hline
+Entertainment \& Media & 224 & 5.4\% \\ \hline
+Productivity \& Work & 188 & 4.5\% \\ \hline
+Education \& Knowledge & 172 & 4.2\% \\ \hline
+Utilities \& System & 132 & 3.2\% \\ \hline
+Finance & 109 & 2.6\% \\ \hline
+Shopping \& Commerce & 105 & 2.5\% \\ \hline
+News \& Magazines & 50 & 1.2\% \\ \hline
+Navigation \& Mobility & 42 & 1.0\% \\ \hline
+Kids \& Family & 26 & 0.6\% \\ \hline
+\textbf{Total} & \textbf{4,141} & \textbf{100\%} \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\subsection{Data Preprocessing and Feature Engineering}
+
+\subsubsection{Permission Processing}
+    
+Android permissions represent a critical security signal. The preprocessing pipeline addresses the heterogeneity and verbosity of permission declarations through a three-stage process.
+
+\begin{enumerate}
+    \item \textbf{Permission Vocabulary Construction}
+    
+    After normalization and deduplication, the final permission vocabulary consists of \textbf{166 unique permissions}. This vocabulary captures all permission declarations across the 4,141 collected applications.
+
+    \item \textbf{Permission Categorization}
+    
+    Raw permissions are first categorized into eight high-level categories based on Android security model:
+    
+    \begin{itemize}
+        \item \textbf{Location}: GPS-based and network-based location access
+        \item \textbf{Storage}: Read/write access to external storage
+        \item \textbf{Camera}: Image and video capture capabilities
+        \item \textbf{Microphone}: Audio recording permissions
+        \item \textbf{Contacts}: Access to contact database
+        \item \textbf{Phone}: Call initiation and phone state access
+        \item \textbf{SMS}: Send/receive SMS messages
+        \item \textbf{Other}: Network, Bluetooth, and miscellaneous permissions
+    \end{itemize}
+
+    \item \textbf{Permission Normalization}
+    
+    Permission strings exhibit significant variability in their textual representation. We implemented a normalization procedure that maps natural language descriptions to standardized Android permission constants. Examples include:
+    
+    \begin{itemize}
+        \item ``\textit{precise location (GPS and network-based)}'' $\rightarrow$ \texttt{ACCESS\_FINE\_LOCATION}
+        \item ``\textit{take pictures and videos}'' $\rightarrow$ \texttt{CAMERA}
+        \item ``\textit{read the contents of your USB storage}'' $\rightarrow$ \texttt{READ\_EXTERNAL\_STORAGE}
+    \end{itemize}
+
+    \item \textbf{Permission Encoding}
+    
+    The hierarchical permission structure is flattened into a binary vector representation. Let $\mathcal{P} = \{p_1, p_2, \ldots, p_{166}\}$ be the set of all unique permissions in the dataset. For application $i$, the permission vector is defined as:
+    
+    \begin{equation}
+    \mathbf{p}_i = [p_{i,1}, p_{i,2}, \ldots, p_{i,166}] \in \{0,1\}^{166}
+    \end{equation}
+    
+    where $p_{i,j} = 1$ if application $i$ requests permission $p_j$, and $p_{i,j} = 0$ otherwise.
+\end{enumerate}
+
+
+\subsubsection{Text Feature Processing}
+
+Textual features (application title and description) undergo the following preprocessing:
+
+\begin{enumerate}
+    \item \textbf{Concatenation}: Title and description are concatenated to form a unified text representation.
+    
+    \item \textbf{Text Dimension}: The text feature matrix has dimensions $3529 \times d_{\text{text}}$, where $d_{\text{text}}$ represents the embedding dimension used by the transformer model.
+    
+    \item \textbf{Tokenization}: Text is tokenized using DistilBERT's WordPiece tokenizer with maximum sequence length of 256 tokens, ensuring coverage of full descriptions.
+\end{enumerate}
+
+Figure~\ref{fig:text_length_dist} shows the distribution of description lengths across the dataset.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{img/datasets/text_length_distribution.png}
+\caption{Distribution of text description lengths}
+\label{fig:text_length_dist}
+\end{figure}
+
+
+
+\subsection{Risk Label Generation and Validation}
+\label{sec:label_generation}
+
+A fundamental challenge in this research is the absence of ground truth risk labels. We address this through a rigorous, multi-stage label generation and validation framework.
+\begin{enumerate}
+
+\item \textbf{Heuristic Label Generation}
+
+Ground truth risk labels do not exist for nuanced privacy assessment tasks. Unlike malware detection, where binary labels can be derived from antivirus scans \cite{arp2014drebin}, privacy risk exists on a continuum and requires expert judgment. The subjective nature of privacy concerns—what constitutes "excessive" data collection or "inappropriate" permission usage—varies across contexts, user expectations, and regulatory frameworks. 
+
+Given these constraints, we employ a \textit{validated heuristic approach} that systematically codifies expert reasoning into reproducible rules. This methodology has established precedent in security and privacy research, where automated heuristics serve as proxies for expert judgment when ground truth is unavailable or impractical to obtain:
+
+\begin{itemize}
+    \item \textbf{AutoCog} (NDSS 2018) \cite{nan2014autocog}: Developed heuristic rules to generate cognitive permission labels by analyzing UI context and code patterns, achieving 85\% accuracy against manual validation
+    \item \textbf{WHYPER} (USENIX Security 2013) \cite{pandita2013whyper}: Used rule-based natural language processing to infer permission purposes from app descriptions, validated against a manually labeled ground truth set
+    \item \textbf{PermPair} (CCS 2020) \cite{arora2020permpair}: Created heuristic mappings between Android permissions and API calls through static analysis patterns, validated through manual inspection of randomly sampled cases
+\end{itemize}
+
+Our heuristic approach offers several advantages: (1) \textit{scalability} to large datasets without linear cost growth, (2) \textit{consistency} in applying privacy criteria uniformly across all applications, (3) \textit{reproducibility} enabling other researchers to validate and extend our findings, and (4) \textit{transparency} in how privacy risk assessments are derived. We validate our heuristics through [describe your validation method—e.g., manual inspection of random samples, comparison with privacy expert assessments, cross-validation with external privacy databases].
+
+
+
+% % \subsubsection{Labeling Algorithm}
+
+% % The heuristic labeling algorithm computes a composite risk score based on three components:
+
+% % \begin{equation}
+% % \label{eq:risk_score}
+% % \text{RiskScore}_i = \alpha \cdot w_{g_i} + \beta \cdot S_{\text{perm}}(p_i) + \gamma \cdot M_{\text{mismatch}}(p_i, g_i)
+% % \end{equation}
+
+% % where:
+% % \begin{itemize}
+% %     \item $w_{g_i}$ is the genre sensitivity weight
+% %     \item $S_{\text{perm}}(p_i)$ is the normalized permission risk score
+% %     \item $M_{\text{mismatch}}(p_i, g_i)$ is the permission-genre mismatch penalty
+% %     \item $\alpha = 0.35$, $\beta = 0.30$, $\gamma = 0.25$ (weights determined empirically)
+% % \end{itemize}
+
+% % The initial heuristic labeling produced the following distribution:
+% % \begin{itemize}
+% %     \item Low Risk: 1,735 applications (41.9\%)
+% %     \item Medium Risk: 1,578 applications (38.1\%)
+% %     \item High Risk: 828 applications (20.0\%)
+% % \end{itemize}
+
+\item \textbf{Multi-Expert Validation}
+
+To validate the heuristic labels, we simulate three expert perspectives with distinct risk assessment philosophies:
+
+\begin{enumerate}
+    \item \textbf{Security Expert}: Conservative bias, prioritizes permissions
+    \item \textbf{Usability Expert}: Liberal bias, prioritizes genre context
+    \item \textbf{Balanced Expert}: No bias, equal weighting
+\end{enumerate}
+
+Each expert generates independent labels for all 4,141 applications, enabling inter-rater reliability analysis.
+
+\item \textbf{Inter-Rater Reliability Analysis}
+
+\begin{enumerate}
+\item \textbf{Pairwise Cohen's Kappa}
+
+Pairwise agreement between experts is quantified using Cohen's Kappa \cite{cohen1960kappa}:
+
+\begin{table}[htbp]
+\centering
+\caption{Pairwise Inter-Rater Agreement (Cohen's Kappa)}
+\label{tab:cohens_kappa}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Rater Pair} & \textbf{Cohen's $\kappa$} & \textbf{Interpretation} \\
+\hline
+Security /$\leftrightarrow$ Usability & -0.033 & Poor \\ \hline
+Security /$\leftrightarrow$ Balanced & 0.149 & Poor \\ \hline
+Usability /$\leftrightarrow$ Balanced & 0.636 & Substantial \\ \hline
+\end{tabular}
+\end{table}
+
+The negative agreement between security and usability experts ($\kappa = -0.033$) reflects their strongly opposing biases, which is methodologically intentional. The substantial agreement between usability and balanced experts ($\kappa = 0.636/$) suggests the balanced approach approximates a moderate risk stance.
+
+\item \textbf{Fleiss' Kappa (Multi-Rater)}
+
+For overall multi-rater agreement, we compute Fleiss' Kappa \cite{fleiss1971kappa}:
+
+\begin{equation}
+\kappa_{\text{Fleiss}} = \frac{\bar{P} - \bar{P}_e}{1 - \bar{P}_e}
+\end{equation}
+
+\textbf{Result}: $\kappa_{\text{Fleiss}} = 0.1747$ (Fair agreement)
+
+This value indicates fair agreement according to Landis \& Koch's interpretation guidelines \cite{landis1977kappa}:
+\begin{itemize}
+    \item $\kappa < 0.20$: Poor agreement
+    \item $0.20 \leq \kappa < 0.40$: Fair agreement
+    \item $0.40 \leq \kappa < 0.60$: Moderate agreement
+    \item $0.60 \leq \kappa < 0.80$: Substantial agreement
+    \item $\kappa \geq 0.80$: Almost perfect agreement
+\end{itemize}
+
+\item \textbf{Expert Consensus Statistics}
+
+Analysis of expert agreement reveals:
+\begin{itemize}
+    \item \textbf{Full agreement} (all three experts agree): 800/4,141 applications (19.3\%)
+    \item \textbf{Partial agreement} (at least two experts agree): 4,141/4,141 applications (100.0\%)
+\end{itemize}
+
+Final consensus labels are determined by majority vote among the three experts, ensuring that every application has at least two experts in agreement on its risk classification.
+
+\item \textbf{Label Confidence Scoring}
+
+Each label is assigned a confidence score based on:
+\begin{equation}
+\text{Confidence}_i = f(\text{RiskScore}_i, N_{\text{agree}}, \sigma_{\text{expert}})
+\end{equation}
+
+where $N_{\text{agree}}$ is the number of experts agreeing and $\sigma_{\text{expert}}$ captures the variance in expert assessments.
+
+\item \textbf{Confidence Statistics}:
+\begin{itemize}
+    \item Mean confidence: 0.7108
+    \item Median confidence: 0.6925
+    \item Standard deviation: 0.1085
+    \item Minimum confidence: 0.5517
+    \item Maximum confidence: 1.0000
+\end{itemize}
+
+\begin{table}[htbp]
+\centering
+\caption{Confidence Statistics by Risk Class}
+\label{tab:confidence_by_class}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Risk Class} & \textbf{Mean} & \textbf{Std. Dev.} & \textbf{Count} \\
+\hline
+Low & 0.693 & 0.053 & 1,735 \\ \hline
+Medium & 0.660 & 0.098 & 1,578 \\ \hline
+High & 0.845 & 0.105 & 828 \\ 
+\hline
+\end{tabular}
+\end{table}
+
+\item \textbf{Low-Confidence Sample Filtering}
+
+A total of \textbf{612 samples (14.8\%)} exhibited low confidence scores (confidence $< 0.6$). These samples were excluded from the final training dataset to improve label quality, resulting in the high-confidence dataset of 3,529 applications.
+
+The decision to use a 0.6 confidence threshold balances:
+\begin{itemize}
+    \item Maintaining sufficient training data
+    \item Ensuring label quality for model learning
+    \item Retaining representation across all risk classes
+\end{itemize}
+
+\item \textbf {Sensitivity Analysis}
+
+To assess label robustness, we perturb genre sensitivity weights by scaling factors and measure label stability:
+
+\begin{table}[htbp]
+\centering
+\caption{Label Stability Under Parameter Perturbation}
+\label{tab:sensitivity}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Scale Factor} & \textbf{Agreement with Baseline} & \textbf{Status} \\
+\hline
+0.8 & 94.76\% & Stable \\ \hline
+0.9 & 96.33\% & Stable \\ \hline
+1.0 (baseline) & 100.00\% & -- \\ \hline
+1.1 & 99.06\% & Stable \\ \hline
+1.2 & 95.99\% & Stable \\ \hline
+\end{tabular}
+\end{table}
+
+Figure~\ref{fig:sensitivity} visualizes this analysis, demonstrating that labels remain stable ($>85\%$ agreement) across reasonable parameter variations. The pipeline's sensitivity analysis confirms:
+
+\begin{itemize}
+    \item \textbf{Stability criterion met}: All perturbations maintain $>85\%$ agreement
+    \item \textbf{Robustness}: Labels are not overly sensitive to threshold choices
+    \item \textbf{Reliability}: The heuristic algorithm produces consistent outputs
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{img/datasets/sensitivity_analysis.png}
+\caption{Label stability under genre weight perturbation}
+\label{fig:sensitivity}
+\end{figure}
+\end{enumerate}
+\end{enumerate}
+Agreement with baseline labels remains above 94\% for $\pm20\%$ weight variations, has demonstrated robustness. All tested perturbations met the 85\% stability criterion.
+
+
+\subsection{Comprehensive Data Validation}
+\label{sec:data_validation}
+
+
+\begin{enumerate}
+    \item \textbf{Schema Validation}
+
+All 4,141 collected records were verified for structural integrity against a predefined schema. The validation revealed:
+
+\begin{table}[htbp]
+\centering
+\caption{Schema Validation Results}
+\label{tab:schema_validation}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Metric} & \textbf{Count} & \textbf{Percentage} \\
+\hline
+Total records & 4,141 & 100.0\% \\ \hline
+Valid records & 0 & 0.0\% \\ \hline
+Invalid records & 4,141 & 100.0\% \\ 
+\hline
+\end{tabular}
+\end{table}
+
+\item \textbf{Primary Schema Issue}:
+ All records were flagged for missing the mapped generic genre and label field. This indicates a structural inconsistency in the data collection format that did not affect downstream processing, as genre information was successfully extracted through metadatas.
+
+
+    \item \textbf{Data Integrity Validation}
+    
+    Despite the schema flagging, six automated integrity checks were performed to verify data quality:
+    
+    All integrity checks passed successfully, confirming that despite the schema structural issue, the actual data values are valid and usable for analysis.
+
+    \item \textbf{Statistical Quality Analysis}
+    
+ \begin{itemize}
+    
+    \item \textbf{Feature Distributions}
+    
+    Table~\ref{tab:feature_stats_detailed} summarizes key feature distributions across the dataset.
+    
+    \begin{table}[htbp]
+    \centering
+    \caption{Statistical Summary of Numeric Features}
+    \label{tab:feature_stats_detailed}
+    \begin{tabular}{|l|c|c|c|c|c|c|}
+    \hline
+    \textbf{Feature} & \textbf{Count} & \textbf{Mean} & \textbf{Std} & \textbf{Min} & \textbf{Median} & \textbf{Max} \\
+    \hline
+    Star Rating & 2,906 & 3.72 & 1.43 & 0.0 & 4.24 & 5.00 \\ \hline
+    Ratings Count & 2,906 & 2.46M & 12.83M & 0 & 95.9K & 205.6M \\ \hline
+    Downloads & 3,529 & 129.2M & 817.9M & 0 & 5M & 10B \\ \hline
+    Total Permissions & 3,529 & 13.0 & 8.2 & 0 & 11 & 75 \\ 
+    \hline
+    \end{tabular}
+    \end{table}
+    
+    \item \textbf{Outlier Detection}
+    
+    Using the Interquartile Range (IQR) method, outliers were detected but not removed, as they represent legitimate applications:
+    
+    \begin{table}[htbp]
+    \centering
+    \caption{Outlier Detection Results (IQR Method)}
+    \label{tab:outliers}
+    \begin{tabular}{|l|c|c|}
+    \hline
+    \textbf{Feature} & \textbf{N Outliers} & \textbf{Percentage} \\
+    \hline
+    Star Rating & 392 & 13.5\% \\ \hline
+    Ratings Count & 487 & 16.8\% \\ \hline
+    Downloads & 839 & 23.8\% \\ \hline
+    Total Permissions & 112 & 3.2\% \\ 
+    \hline
+    \end{tabular}
+    \end{table}
+    
+    High outlier percentages for downloads and ratings reflect the presence of extremely popular applications (e.g., Facebook, WhatsApp, Instagram) with billions of downloads, which are valid data points.
+    
+  \item \textbf{Class Imbalance Analysis and Balancing Strategy}
+    
+    The initial high-confidence dataset exhibited moderate class imbalance:
+    
+    \begin{table}[h]
+    \centering
+    \caption{Initial Class Distribution (Before Balancing)}
+    \label{tab:class_imbalance_initial}
+    \begin{tabular}{|l|c|c|}
+    \hline
+    \textbf{Risk Class} & \textbf{Count} & \textbf{Percentage} \\
+    \hline
+    Low & 955 & 47.2\% \\ \hline
+    Medium & 563 & 27.8\% \\ \hline
+    High & 505 & 25.0\% \\ \hline
+    
+    \textbf{Total} & \textbf{2,023} & \textbf{100\%} \\
+    \hline
+    \textbf{Imbalance Ratio} & \multicolumn{2}{c|}{\textbf{1.89}} \\
+    \hline
+    \end{tabular}
+    \end{table}
+    
+    The imbalance ratio of 1.89 indicates mild class imbalance ($1.5 < \text{ratio} \leq 3.0$), with Low-risk applications being nearly twice as frequent as High-risk applications. While this imbalance could be addressed through synthetic oversampling techniques such as SMOTE \cite{chawla2002smote} or generative augmentation methods, we opted for a conservative undersampling approach to maintain data authenticity.
+    
+    
+    \item \textbf{Undersampling Strategy}
+    
+    To achieve perfect class balance while preserving real-world data integrity, we applied \textbf{random undersampling} to match the minority class count:
+    
+    \begin{equation}
+    n_{\text{balanced}} = \min(n_{\text{Low}}, n_{\text{Medium}}, n_{\text{High}}) = 505
+    \end{equation}
+    
+    For each class $c \in \{\text{Low}, \text{Medium}, \text{High}\}$, we randomly sampled without replacement:
+    
+    \begin{equation}
+    \mathcal{D}_c^{\text{balanced}} \sim \text{Sample}(\mathcal{D}_c^{\text{initial}}, n=505)
+    \end{equation}
+    
+    This approach offers several advantages over synthetic methods:
+    
+    \begin{enumerate}
+        \item \textbf{Data Authenticity}: All samples represent real applications, avoiding artifacts from synthetic generation
+        \item \textbf{Distribution Preservation}: Original feature distributions within each class remain unaltered
+        \item \textbf{Model Reliability}: Prevents models from learning synthetic patterns that may not generalize to real applications
+        \item \textbf{Interpretability}: All predictions can be traced back to actual applications for error analysis
+    \end{enumerate}
+    
+    The trade-off is a reduction in total dataset size from 2,023 to 1,515 samples. However, this size remains sufficient for training deep learning models with appropriate regularization.
+    \end{itemize}
+ \end{enumerate}
+ 
+ \subsection{Final Balanced Dataset}
+    
+    After undersampling, the dataset achieves perfect class balance:
+    
+    \begin{table}[htbp]
+    \centering
+    \caption{Final Balanced Class Distribution}
+    \label{tab:class_balanced_final}
+    \begin{tabular}{|l|c|c|}
+    \hline
+    \textbf{Risk Class} & \textbf{Count} & \textbf{Percentage} \\
+    \hline
+    Low & 505 & 33.3\% \\ \hline
+    Medium & 505 & 33.3\% \\ \hline
+    High & 505 & 33.3\% \\ 
+    \hline
+    \textbf{Total} & \textbf{1,515} & \textbf{100\%} \\
+    \hline
+    \textbf{Imbalance Ratio} & \multicolumn{2}{c|}{\textbf{1.00 (Perfectly Balanced)}} \\
+    \hline
+    \end{tabular}
+    \end{table}
+    
+    \textbf{Samples Removed}:
+    \begin{itemize}
+        \item Low-risk: 450 samples removed (955 $\rightarrow$ 505)
+        \item Medium-risk: 58 samples removed (563 $\rightarrow$ 505)
+        \item High-risk: 0 samples removed (505 retained)
+    \end{itemize}
+    
+    
+    % \subsubsection{Rationale for Real Data Preference}
+    
+    % While synthetic oversampling techniques offer the advantage of preserving all original samples, we prioritize real data for the following reasons:
+    
+    % \begin{enumerate}
+    %     \item \textbf{Feature Complexity}: Android applications have high-dimensional, multimodal features (166 permissions + text embeddings). Synthetic generation may produce unrealistic feature combinations that violate domain constraints.
+        
+    %     \item \textbf{Correlation Preservation}: Permission-genre-description relationships are complex. SMOTE and similar methods may generate synthetic samples with impossible combinations (e.g., a weather app with SMS permissions synthesized from interpolation).
+        
+    %     \item \textbf{Evaluation Integrity}: Testing on real applications provides more reliable estimates of real-world performance than testing on partially synthetic data.
+        
+    %     \item \textbf{Sufficient Sample Size}: With 505 samples per class (1,515 total), the dataset remains adequate for training neural networks with modern regularization techniques (dropout, weight decay, data augmentation via text paraphrasing).
+    % \end{enumerate}
+    
+    % \subsubsection{Impact on Model Training}
+    
+    % The balanced dataset enables:
+    % \begin{itemize}
+    %     \item \textbf{Uniform Loss Weighting}: No need for class-weighted loss functions, simplifying hyperparameter tuning
+    %     \item \textbf{Fair Evaluation}: Accuracy becomes a meaningful metric alongside F1-scores
+    %     \item \textbf{Bias Reduction}: Models are equally exposed to all risk levels during training
+    %     \item \textbf{Simplified Interpretation}: Per-class metrics directly reflect model capabilities without imbalance confounds
+    % \end{itemize}
+    
+    
+
+\subsection{Data Splitting}
+
+The final balanced dataset (1,515 applications) was partitioned using stratified random sampling to maintain perfect class balance across all splits:
+
+\begin{table}[htbp]
+\centering
+\caption{Dataset Split Configuration (Balanced)}
+\label{tab:split_config}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Split} & \textbf{Count} & \textbf{Percentage} \\
+\hline
+Training Set & 1,060 & 70.0\% \\ \hline
+Validation Set & 227 & 15.0\% \\ \hline
+Test Set & 228 & 15.0\% \\
+\hline
+\textbf{Total} & \textbf{1,515} & \textbf{100\%} \\
+\hline
+\end{tabular}
+\end{table}
+
+Each split maintains perfect class balance (33.3\% per class), verified through stratification checks.
+
+
+
+
+
+
+
+\section{Working Principle}
+ The workflow illustrates how raw input data is preprocessed, transformed into machine-learning-ready features, processed through the model, and post-processed for final risk assessment.
+
+\subsection{Preprocessing of Raw Data}
+
+The raw dataset contains heterogeneous information for each application, including manifest-declared permissions, metadata, genre, and textual descriptions. Before being fed into the MM-HNN, each input type undergoes a dedicated preprocessing pipeline to convert it into machine-learning-ready features.
+
+\subsubsection{ Structural Feature Preparation:}
+\begin{enumerate}
+\item \textbf{Binary Encoding of Permissions:}  
+All permissions declared in the AndroidManifest are converted into a fixed-length binary vector. Each element represents whether a specific permission is requested ($1$) or not ($0$).  
+
+\textbf{Example:} For the app \textit{Fashion Stylist Dress Up Show}:
+
+\begin{itemize}
+    \item Raw permissions:
+    \texttt{\{'Phone': ['read phone status'], 'Storage': ['read/write storage'], 'Other': ['full network access']\}}  
+    \item Encoded vector (simplified):
+    \texttt{[Phone: 1, Storage: 1, Camera: 0, Microphone: 0, Location: 0, Other: 1, ...]}
+\end{itemize}
+
+\item \textbf{Metadata Normalization:}  
+Continuous metadata such as number of downloads, star rating, total permissions, and other app statistics are normalized using min-max scaling to ensure numerical stability during training.
+
+\textbf{Example:}
+
+\begin{itemize}
+    \item Raw metadata: \texttt{nb\_downloads = 1,000,000; star\_rating = 4.458; total\_permissions = 9}  
+    \item Normalized metadata (scaled between 0 and 1): \texttt{[0.35, 0.91, 0.67]}
+\end{itemize}
+
+ \item \textbf{Genre Weight Assignment:}  
+Each application genre is mapped to a scalar weight reflecting the expected sensitivity of requested permissions.  
+
+\textbf{Example:}  
+
+\begin{itemize}
+    \item Genre: \texttt{"Casual"}  
+    \item Genre sensitivity weight: \texttt{0.5}
+\end{itemize}
+
+ \item \textbf{Combined Structural Vector:}  
+Binary permissions, normalized metadata, and genre weight are concatenated into a single **structural feature vector**, which serves as input to the VAE module.
+
+\textbf{Example:}  
+\begin{verbatim}
+[1, 1, 0, 0, 0, 1, 0.35, 0.91, 0.67, 0.5]
+\end{verbatim}
+\end{enumerate}
+
+\subsubsection{Semantic Feature Preparation}
+\begin{enumerate}
+    \item \textbf{Text Construction:}  
+The input text for DistilBERT is generated by combining multiple fields of the metadata:
+
+\begin{itemize}
+    \item Title of the app
+    \item General genre
+    \item Full description
+    \item Permissions summary
+\end{itemize}
+
+This concatenation ensures that the semantic representation reflects both functional claims and requested permissions, enabling the model to detect inconsistencies.
+
+\item \textbf{Tokenization:}  
+The concatenated text is tokenized using the DistilBERT tokenizer. This produces:
+
+\begin{itemize}
+    \item Token IDs representing each word/subword in the vocabulary
+    \item Attention masks indicating which tokens are padding vs actual content
+\end{itemize}
+
+\textbf{Example (truncated):}
+
+\begin{itemize}
+    \item Raw text excerpt: \\
+    \textit{"Fashion Stylist Dress Up Show, Casual game. Do you want to become a trendsetter...? Permissions requested: Phone, Storage, Other."}  
+    \item Token IDs: \texttt{[101, 2272, 15823, 4459, 102, 2079, 2017, ...]}  
+    \item Attention mask: \texttt{[1, 1, 1, 1, 1, 1, 1, ..., 0]}
+\end{itemize}
+
+\textbf{Output:}  
+- Token IDs and attention masks are ready for DistilBERT input.  
+- The semantic embedding extracted from this input will later be concatenated with the VAE latent vector and genre weight in the fusion layer.
+
+\end{enumerate}
+
+
+\subsection{Data Flow Through MM-HNN Model}
+
+After preprocessing, the ML-ready inputs are passed through the Multi-Modal Hybrid Neural Network (MM-HNN) to extract latent features and produce a privacy risk classification. The data flow is modular, comprising the structural (VAE) branch, the semantic (DistilBERT) branch, and a fusion classifier.
+
+\begin{enumerate}
+\item \textbf{Structural Module: VAE}
+
+The structural feature vector, which combines binary permissions, normalized metadata, and genre weight, is fed into the VAE encoder. The VAE performs the following operations:
+
+\begin{itemize}
+    \item \textbf{Encoding:} Compresses the high-dimensional structural input into a latent vector $\mathbf{z}$ that captures essential structural risk patterns such as unusual permission combinations, over-privilege, or abnormal metadata behavior.
+    \item \textbf{Reparameterization:} Introduces stochasticity via the VAE latent distribution to improve generalization.
+    \item \textbf{Decoding (training only):} Reconstructs the input vector to optimize reconstruction loss and KL divergence, ensuring that the latent vector $\mathbf{z}$ retains meaningful information.
+\end{itemize}
+
+\textbf{Output:}  
+\begin{itemize}
+ \item Latent structural embedding $\mathbf{z}$ of dimension $latent\_dim$  
+ \item During training, reconstruction vector used for loss computation  
+\end{itemize}
+
+This latent vector is forwarded to the fusion layer as the structural representation of the app.
+
+\item \textbf{Semantic Module: DistilBERT}
+
+The concatenated text sequence (title + genre + description + permissions) is passed into the DistilBERT encoder. The operations are:
+
+\begin{itemize}
+    \item \textbf{Token Embedding:} Converts token IDs into dense word embeddings.
+    \item \textbf{Contextual Encoding:} Generates contextualized embeddings for each token using transformer layers, capturing semantic meaning, alignment between declared functionality and requested permissions, and textual indicators of privacy risk.
+    \item \textbf{CLS Pooling:} Extracts the [CLS] token embedding as a fixed-size semantic vector $\mathbf{e}_{bert}$ representing the entire app description.
+\end{itemize}
+
+\textbf{Output:}  
+\begin{itemize}
+ \item Semantic embedding $\mathbf{e}_{bert}$ of dimension 768  
+\item  Encodes the functional justification of requested permissions and contextual anomalies  
+\end{itemize}
+
+This embedding is passed to the fusion layer for multimodal integration.
+
+\item \textbf{Fusion Layer}
+
+The fusion layer integrates the outputs from both branches:
+
+\begin{itemize}
+    \item VAE latent embedding $\mathbf{z}$ (structural features)
+    \item DistilBERT embedding $\mathbf{e}_{bert}$ (semantic features)
+    \item Genre sensitivity weight $g$ (scalar)
+\end{itemize}
+
+These features are concatenated to form a combined feature vector, which is passed through a sequence of dense layers with ReLU activations and dropout. The fusion layer learns cross-modal interactions, such as:
+
+\begin{itemize}
+    \item Alignment between requested permissions and semantic justification
+    \item Structural anomalies relative to app genre
+    \item Interaction between metadata and permission risk patterns
+\end{itemize}
+
+\textbf{Output:} 
+\begin{itemize}
+\item Fused high-dimensional feature vector representing the app’s overall privacy risk profile  
+\end{itemize}
+
+This vector is fed into the final classification head.
+
+\item \textbf{ Classification Head}
+
+The classification head maps the fused vector to logits corresponding to four privacy risk categories:  
+
+\begin{itemize}
+    \item Low
+    \item Moderate
+    \item High
+\end{itemize}
+
+\textbf{Output:} 
+\begin{itemize}
+\item Logits vector of dimension 3, representing the model’s unnormalized confidence for each risk category  
+\item These logits are later converted to probabilities in the post-processing stage for final prediction
+\end{itemize}
+
+\end{enumerate}
+
+
+\subsection{Post-Processing and Risk Prediction}
+
+After passing through the MM-HNN, each application has a **logits vector** from the classification head, representing unnormalized confidence scores for the four privacy risk categories: Low, Moderate, High, and Critical. The post-processing stage converts these logits into interpretable predictions and evaluates model performance.
+
+\begin{enumerate}
+    \item \textbf{Probability Conversion:}
+The logits are passed through a softmax function to convert them into probability scores for each class:
+
+\begin{itemize}
+    \item \textbf{Input:} Logits vector $\mathbf{o} = [o_{Low}, o_{Moderate}, o_{High}]$  
+    \item \textbf{Output:} Probability vector $\hat{\mathbf{y}} = [p_{Low}, p_{Moderate}, p_{High}]$  
+    \item \textbf{Example:}   \\ 
+    \texttt{Logits: [1.2, -0.3, 2.1]}   \\
+    \texttt{Softmax Probabilities: [0.22, 0.05, 0.61]}
+\end{itemize}
+
+These probabilities indicate the model’s confidence in each privacy risk category.
+
+
+ \item \textbf{Risk Label Assignment}
+
+The predicted risk category is determined by selecting the class with the highest probability:
+
+\begin{itemize}
+    \item \textbf{Input:} Probability vector $\hat{\mathbf{y}}$  
+    \item \textbf{Output:} Predicted risk label  
+    \item \textbf{Example:} \\ 
+    \texttt{Probability vector: [0.22, 0.05, 0.61]}  \\
+    \texttt{Predicted Risk: High}
+\end{itemize}
+
+This step converts model outputs into actionable classifications that can guide user or system decisions regarding privacy risks.
+\end{enumerate}
+
+\subsection{Evaluation Metrics and Justification}
+
+To verify and validate the performance of the MM-HNN framework, multiple complementary metrics are used. These metrics not only quantify overall accuracy but also address class imbalance, ranking ability, and detailed category-wise performance.
+
+\begin{enumerate}
+
+\item \textbf{Accuracy:}  
+Measures the proportion of correctly classified apps among all predictions:
+
+\begin{equation}
+\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}
+\end{equation}
+
+\item \textbf{Precision and Recall:}  
+Precision evaluates the proportion of true positives among all predicted positives, while recall measures the proportion of true positives among all actual positives:
+
+\begin{equation}
+\text{Precision} = \frac{TP}{TP + FP}
+\end{equation}
+
+\begin{equation}
+\text{Recall} = \frac{TP}{TP + FN}
+\end{equation}
+
+\item \textbf{F1-Score:}  
+The harmonic mean of precision and recall:
+
+\begin{equation}
+\text{F1-score} = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}
+\end{equation}
+
+\item \textbf{Area Under the ROC Curve (AUC):}  
+The ROC curve plots True Positive Rate (TPR) against False Positive Rate (FPR):
+
+\begin{equation}
+TPR = \frac{TP}{TP + FN}
+\end{equation}
+
+\begin{equation}
+FPR = \frac{FP}{FP + TN}
+\end{equation}
+
+\begin{equation}
+\text{AUC} = \int_{0}^{1} TPR(FPR^{-1}(x)) \, dx
+\end{equation}
+
+\item \textbf{Confusion Matrix:}  
+Binary confusion matrix representation:
+
+\begin{equation}
+\text{Confusion Matrix} =
+\begin{bmatrix}
+TP & FP \\
+FN & TN
+\end{bmatrix}
+\end{equation}
+
+For multi-class classification with $C$ risk categories:
+
+\begin{equation}
+CM_{C \times C} =
+\begin{bmatrix}
+n_{11} & \cdots & n_{1C} \\
+\vdots & \ddots & \vdots \\
+n_{C1} & \cdots & n_{CC}
+\end{bmatrix}
+\end{equation}
+
+where $n_{ij}$ denotes the number of samples from true class $i$ predicted as class $j$.
+
+\end{enumerate}
+
+These metrics collectively provide a comprehensive evaluation framework for MM-HNN, ensuring that it reliably identifies privacy risks while accounting for class imbalance and interpretability.

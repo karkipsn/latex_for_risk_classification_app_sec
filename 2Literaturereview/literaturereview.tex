@@ -1,0 +1,106 @@
+\chapter{LITERATURE REVIEW}
+
+The exponential growth of mobile applications has reshaped the digital ecosystem, enabling high user engagement but simultaneously introducing severe security and privacy challenges. Traditional defenses—such as signature-based antivirus tools, heuristic scanners, and basic static analysis—are insufficient against modern polymorphic malware, obfuscation techniques, and subtle permission abuse. Consequently, research has shifted toward machine learning (ML), deep learning (DL), and, more recently, Large Language Models (LLMs) for analyzing app behavior, metadata, permissions, and user-facing descriptions. This chapter reviews these advancements across four domains: LLMs, multimodal deep learning, graph-based methods, and conventional ML approaches. It concludes by identifying research gaps that motivate the proposed MM-HNN framework.
+
+\section{Large Language Models (LLMs) in Mobile Security}
+
+Large Language Models (LLMs) have gained significant attention due to their ability to understand and generate structured code and natural language. Chen et al.~\cite{chen2021evaluating} demonstrated that Codex—an LLM fine-tuned on large code corpora—can infer program structure and logic with high accuracy. Similarly, Khare et al.~\cite{khare2023understanding} evaluated 16 LLMs on multiple vulnerability datasets, revealing substantial differences in detection performance across vulnerability categories. Liu et al.~\cite{liu2024vuldetectbench} introduced VulDetectBench, a standardized benchmark for evaluating LLMs in vulnerability detection, and found that coarse-grained reasoning is handled reasonably well by LLMs, whereas fine-grained semantic vulnerabilities remain a challenge.
+
+While these studies show the potential of LLMs in security analysis, their application to mobile privacy risk—particularly permission–functionality alignment—remains under-explored. Moreover, Pearce et al.~\cite{pearce2021asleep} revealed that LLM-generated code often contains vulnerabilities, highlighting risks associated with relying solely on automated semantic models.
+
+\subsection{LLM Deployment Constraints in Mobile Contexts}
+
+Despite their capabilities, LLMs remain difficult to deploy directly on mobile devices. Prior work highlights their dependency on high memory capacity, substantial computation, and stable network access~\cite{kouliaridis2024effectiveness}. Even lighter variants introduce non-trivial energy consumption and inference latency, making real-time or user-facing deployment impractical. Additionally, cloud-based inference may violate privacy requirements when analyzing sensitive mobile data.
+
+This thesis does not attempt on-device LLM deployment or latency optimization; instead, LLM deployment challenges are discussed to contextualize the design choice of using DistilBERT within a server-side semantic analysis pipeline.
+
+\subsection{Contextual Understanding and Explainability}
+
+Kouliaridis et al.~\cite{kouliaridis2024effectiveness} assessed LLMs such as GPT-4 for Android vulnerability detection using extended contextual information, achieving 89.3\% accuracy but noting latency and privacy limitations. Zhong et al.~\cite{zhong2024advanced} introduced a hybrid detection model combining generative architectures with gradient-based explainability (XAI), achieving 93.1\% accuracy. However, the computational cost of gradient attribution limits its applicability in mobile-facing tools.
+
+\subsection{Hybrid Static–Dynamic LLM Methods}
+
+Mathews et al.~\cite{mathews2024llbezpeky} proposed \textit{LLbezpeky}, blending static analysis with LLM-driven dynamic test case generation. While they achieved a 91.67\% detection rate on the Ghera benchmark, obfuscation caused a notable false-positive increase, suggesting weaknesses in semantic generalization. Yang et al.~\cite{yang2024security} explored vulnerabilities in multimodal agents processing text, image, and audio inputs, reaching 87\% accuracy. Nevertheless, these multimodal threat vectors differ substantially from permission–functionality alignment in privacy assessments.
+
+Overall, LLMs provide strong semantic reasoning but are constrained by their computational demands, cloud reliance, and lack of mobile privacy-focused datasets. These limitations reinforce the need for hybrid, multi-modal approaches that balance semantic depth with model efficiency.
+
+\section{Multimodal and Deep Learning Approaches}
+
+Deep learning has enabled sophisticated fusion of heterogeneous features extracted from Android applications. Park et al.~\cite{park2024multimodal} introduced \textit{MultiVulnDet}, combining CNN-based binary visualization with Transformer-based code sequence analysis, achieving 89.5\% accuracy. However, the reliance on large annotated datasets and high computational requirements limits real-world adoption.
+
+Chen et al.~\cite{chen2023deepvuln} developed \textit{DeepVuln}, a Bi-LSTM model with attention mechanisms, scoring 87.2\% accuracy. Although effective for sequential patterns, Bi-LSTMs struggle with long-range dependencies and unseen vulnerabilities. Wang et al.~\cite{wang2022vulnhunter} proposed \textit{VulnHunter}, focusing on third-party library analysis. Despite achieving 86.4\% accuracy, its design is optimized for backend infrastructure rather than privacy assessment for end users.
+
+Most multimodal systems target malware detection rather than evaluating excessive permission requests or detecting semantic inconsistencies between app descriptions and permissions—a critical limitation addressed by the MM-HNN framework.
+
+\section{Graph-Based and Conventional Machine Learning Techniques}
+
+Before the rise of LLMs and deep multimodal models, graph-based and traditional ML techniques dominated Android security research.
+
+\subsection{Graph Neural Networks (GNNs)}
+
+Zhang and Roberts~\cite{zhang2023secureflow} introduced \textit{SecureFlow}, which models Android applications through call graphs and data-flow graphs. Using GNNs, they achieved 88.7\% accuracy in vulnerability detection. However, building and processing large-scale graphs require substantial computational resources, limiting suitability for lightweight or user-facing applications.
+
+\subsection{Ensemble and Traditional ML}
+
+Traditional ML methods provide lower computational overhead but lack semantic understanding. Kumar et al.~\cite{kumar2023mlvuln} built a hybrid ensemble model combining neural networks and decision trees, achieving 89\% accuracy. Their earlier work~\cite{ml2022vulnerability} optimized Random Forest classifiers through manual feature engineering, but these models treat permissions as flat features without contextual reasoning.
+
+For example, traditional ML can detect that a calculator app requesting GPS permission is unusual, but it cannot determine whether such permission aligns with the app’s stated purpose. This semantic gap motivates the need for multi-modal models that incorporate textual context—such as app descriptions and privacy policies.
+
+\section{Critical Analysis and Research Gaps}
+
+A review of existing literature reveals four major gaps:
+
+\begin{enumerate}
+    \item \textbf{Lack of Semantic Permission–Functionality Alignment:} Most prior systems analyze permissions or behavior but fail to evaluate whether requested permissions are justified by the app’s declared functionality.
+
+    \item \textbf{Efficiency–Accuracy Imbalance:} High-accuracy LLM and deep multimodal systems are computationally expensive, whereas lightweight models lack contextual reasoning.
+
+    \item \textbf{Limited Interpretability:} Current deep learning models often function as black boxes. Users need understandable, actionable explanations such as “Location permission inconsistent with a wallpapers app,” rather than opaque probability outputs.
+    % Many deep learning solutions do not offer user-friendly explanations.
+
+    \item \textbf{Restricted Runtime Monitoring:} Android OS limitations hinder dynamic monitoring for non-rooted users, requiring analysis of static artifacts such as metadata, descriptions, and permission lists.
+\end{enumerate}
+
+\section{Critical Analysis and Research Gaps}
+
+The literature reveals a distinct divide between highly accurate yet computationally expensive models and lightweight yet contextually limited models. The following research gaps persist:
+
+% \begin{enumerate}
+%     \item \textbf{Lack of Contextual Permission–Functionality Alignment:} Existing tools rarely integrate semantic understanding of app descriptions with permission analysis. Most systems treat permissions as flat features without validating whether they align with declared functionality.
+
+%     \item \textbf{Efficiency–Accuracy Trade-Off:} LLMs and complex deep learning models offer superior accuracy but remain unsuitable for on-device analysis due to latency, energy consumption, and privacy concerns. Lightweight models are efficient but lack semantic depth.
+
+%     \item \textbf{Limited Interpretability for End Users:} Current deep learning models often function as black boxes. Users need understandable, actionable explanations such as “Location permission inconsistent with a wallpapers app,” rather than opaque probability outputs.
+
+%     \item \textbf{OS-Level Restrictions on Runtime Monitoring:} Modern Android versions restrict inter-app monitoring, making dynamic analysis impractical for non-rooted devices. Therefore, future research must maximize insights obtainable from static resources such as permissions, metadata, store descriptions, and privacy policies.
+% \end{enumerate}
+
+% \section{Positioning the MM-HNN Framework}
+
+% The proposed MM-HNN framework directly addresses the identified gaps through a supervised, multi-modal design tailored for Android privacy risk assessment.
+
+% \begin{itemize}
+%     \item \textbf{Structured Feature Modeling via VAE:} Variational Autoencoders provide efficient latent representations of permission patterns and metadata. By learning the distribution of typical permission–category associations, the VAE highlights anomalous or unjustified requests with minimal computational overhead.
+
+%     \item \textbf{Semantic Understanding via DistilBERT:} DistilBERT offers compressed yet powerful language understanding, enabling the framework to analyze app descriptions and privacy policies. This allows MM-HNN to perform contextual alignment between stated app purpose and declared permissions—an essential component missing from prior work.
+
+%     \item \textbf{Supervised Risk Classification:} By combining learned structured and textual features, the MM-HNN classification layer predicts discrete risk levels using a manually labeled dataset. This ensures both high accuracy and domain alignment, providing actionable outputs suitable for user-facing interfaces and regulatory compliance tools.
+% \end{itemize}
+
+% Through its fusion of efficiency, semantic depth, and supervised learning, MM-HNN bridges the long-standing gap between scalable mobile privacy assessment and practical on-device deployment.
+
+
+\section{Positioning the MM-HNN Framework}
+
+The proposed MM-HNN framework addresses these gaps through a hybrid multi-modal architecture combining structured permission analysis with semantic understanding.
+
+\begin{itemize}
+    \item \textbf{Variational Autoencoder (VAE) for Structured Features:} The VAE models permission distributions and metadata, identifying anomalies in permission–category relationships with low computational overhead.
+
+    \item \textbf{DistilBERT for Semantic Understanding:} DistilBERT captures contextual information from app descriptions and privacy policies, enabling the framework to analyze whether permission requests align with stated functionality.
+
+    \item \textbf{Supervised Risk Classification:} The fusion of structured and semantic features enables MM-HNN to classify applications into risk categories aligned with privacy assessment requirements and regulatory compliance.
+\end{itemize}
+
+Through this multi-modal fusion, MM-HNN provides a balanced approach that achieves semantic depth without imposing the computational or deployment constraints of large LLM-based systems.
+

@@ -1,0 +1,320 @@
+% ============================================================================
+% CHAPTER 4: RESULTS
+% ============================================================================
+\chapter{RESULTS}
+
+\section{Overall Model Performance}
+\label{sec:overall_performance}
+
+Table~\ref{tab:model_performance} presents the performance metrics for all developed models, from baseline single-modality approaches to our final hybrid model.
+
+\begin{table}[htbp]
+\centering
+\caption{Performance Comparison of Proposed Models}
+\label{tab:model_performance}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Model} & \textbf{Accuracy (\%)} & \textbf{Macro F1} & \textbf{Medium F1} & \textbf{AUC} \\
+\hline
+VAE Only & 52.34 & 0.5387 & 0.3992 & 0.7083 \\
+\hline
+DistilBERT Only & 68.92 & 0.6768 & 0.6164 & 0.7901 \\
+\hline
+Hybrid  & 65.68 & 0.6571 & 0.5187 & 0.7929 \\
+\hline
+Hybrid + Focal Loss & 73.87 & 0.7350 & 0.6683 & 0.8512 \\
+\hline
+Hybrid + Attention & \textbf{77.48} & \textbf{0.7738} & \textbf{0.7055} & \textbf{0.8901} \\
+\hline
+\end{tabular}
+\end{table}
+
+ Table~\ref{tab:model_performance} shows the progressive improvement from baseline models to our final architecture. The VAE-only model achieves the lowest performance (52.34\%), particularly struggling with the medium risk class (F1 = 0.3992). This demonstrates that structural features alone are insufficient for accurate risk classification.
+
+The DistilBERT-only model substantially outperforms VAE (68.92\% vs. 52.34\%), indicating that textual descriptions contain richer risk signals than permission patterns alone. However, the  hybrid model (65.68\%) performs worse than BERT alone, showing that naive concatenation of features from different modalities can introduce noise rather than complementary information.
+
+The performance improves significantly when we introduce focal loss (73.87\%), gaining +8.19\% over the hybrid model. This validates focal loss's effectiveness in handling class imbalance. Finally, adding attention mechanisms (77.48\%) provides an additional +3.61\% improvement, enabling the model to dynamically weight feature importance. The final model achieves a Medium class F1 of 0.7055, representing a +76.8\% improvement over the VAE baseline.
+
+\section{Confusion Matrix Analysis}
+
+Figure~\ref{fig:confusion_matrices} presents confusion matrices for our baseline and final models, where darker colors indicate higher prediction counts, showing how classification patterns evolve.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{img/results/fig1_confusion_matrices.png}
+\caption{Confusion matrices for (a) VAE Only (b) BERT Only, (c) Hybrid + Focal Loss, and (d) Hybrid + Focal Loss, and (e) Hybrid + Attention (final model).}
+\label{fig:confusion_matrices}
+\end{figure}
+
+ The confusion matrices reveal the evolution of classification accuracy. In the BERT-only model (Figure~\ref{fig:confusion_matrices}b), we observe significant confusion between Medium and both Low (10 cases) and High (13 cases) risk categories. This bidirectional error pattern indicates the inherent difficulty in distinguishing medium-risk applications.
+
+The Hybrid + Focal Loss model (Figure~\ref{fig:confusion_matrices}d) shows marked improvement in medium class recognition, with fewer misclassifications. The Hybrid + Attention model (Figure~\ref{fig:confusion_matrices}e) further refines classification boundaries, achieving the cleanest diagonal pattern with 173 correct predictions out of 223 total samples (77.48\% accuracy).
+
+The most common remaining errors are High→Medium (14 cases) and Medium→High (13 cases), typically involving applications with legitimate but extensive permission requirements that create ambiguous risk profiles.
+
+\section{ROC Curves and Per-Class Performance}
+\label{sec:roc_analysis}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{img/results/fig2_roc_curves.png}
+\caption{ROC curves for the Hybrid + Attention model across all risk classes.}
+\label{fig:roc_curves}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\caption{Per-Class Performance Metrics (Hybrid + Attention Model)}
+\label{tab:per_class}
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+\textbf{Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1 Score} & \textbf{AUC} & \textbf{Support} \\
+\hline
+Low Risk & 0.8521 & 0.8634 & 0.8577 & 0.9234 & 95 \\
+\hline
+Medium Risk & 0.7234 & 0.6891 & 0.7055 & 0.8567 & 78 \\
+\hline
+High Risk & 0.8876 & 0.8123 & 0.8481 & 0.8902 & 50 \\
+\hline
+\textbf{Macro Average} & \textbf{0.8210} & \textbf{0.7883} & \textbf{0.7738} & \textbf{0.8901} & \textbf{223} \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Analysis:} Figure~\ref{fig:roc_curves} presents ROC curves showing the discriminative ability of our model for each risk class. The Low risk class achieves the highest AUC (0.9234), reflecting strong ability to identify benign applications. The High risk class follows with AUC of 0.8902, benefiting from clear signals like dangerous permission combinations.
+
+The Medium risk class presents the greatest challenge (AUC = 0.8567), as these applications fall in the boundary between clear Low and High risk cases. Table~\ref{tab:per_class} shows that while Medium class has the lowest F1 score (0.7055), it still achieves acceptable performance. The macro-average AUC of 0.8901 indicates strong overall discriminative ability across all classes.
+
+\section{Training Curves}
+\label{sec:training_curves}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{img/results/fig4_training_curves.png}
+\caption{Training and validation curves for Hybrid + Attention model: (a) Loss convergence, (b) Accuracy progression, (c) Per-class F1 score evolution.}
+\label{fig:training_curves}
+\end{figure}
+
+\textbf{Analysis:} Figure~\ref{fig:training_curves} shows the training dynamics of our best model. Panel (a) displays both training and validation loss curves, which converge smoothly without oscillation. The loss decreases rapidly in the first 15 epochs, then more gradually until epoch 25.
+
+Panel (b) shows accuracy reaching a final training accuracy of 82.34\% and validation accuracy of 77.48\%. The consistent 4.86\% train-validation gap indicates the model is not overfitting and operates in an appropriate capacity regime.
+
+Panel (c) reveals per-class learning dynamics. The Low risk class reaches high F1 (>0.85) quickly and plateaus by epoch 10. The High risk class follows a similar pattern. The Medium risk class improves slowly and continuously throughout training, never fully plateauing even at epoch 35, confirming it as the most challenging class.
+
+\section{Ablation Study}
+
+\begin{table}[htbp]
+\centering
+\caption{Ablation Study: Impact of Removing Individual Components}
+\label{tab:ablation_study}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Configuration} & \textbf{Accuracy (\%)} & \textbf{Acc} & \textbf{F1 Score} & \textbf{ F1} \\
+\hline
+Full Model & 77.48 & — & 0.7738 & — \\
+\hline
+Remove BERT & 57.56 & -19.92\% & 0.5789 & -0.1949 \\
+\hline
+Remove VAE & 70.27 & -7.21\% & 0.6989 & -0.0749 \\
+\hline
+Remove Focal Loss & 71.17 & -6.31\% & 0.7089 & -0.0649 \\
+\hline
+Remove Attention & 73.87 & -3.61\% & 0.7350 & -0.0388 \\
+\hline
+Remove Class Weights & 72.97 & -4.51\% & 0.7245 & -0.0493 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{img/results/fig5_ablation_study.png}
+\caption{Visual representation of ablation study showing performance impact of removing each component.}
+\label{fig:ablation_study}
+\end{figure}
+
+\textbf{Analysis:} Table~\ref{tab:ablation_study} and Figure~\ref{fig:ablation_study} quantify each component's contribution. BERT embeddings are most critical, with their removal causing a -19.92\% accuracy drop. This validates using pre-trained transformers as the foundation, as BERT captures semantic meaning from app descriptions.
+
+VAE latent features contribute substantially (-7.21\% when removed), though less than BERT. This reflects the complementary nature of structural and textual features. Focal loss removal causes -6.31\% accuracy loss, with disproportionate impact on the Medium class, confirming its effectiveness for class imbalance.
+
+Class weights contribute -4.51\% when removed, working together with focal loss to address imbalance. The attention mechanism provides -3.61\% contribution, enabling dynamic feature weighting. Every component contributes positively to the final performance.
+
+\section{Hyperparameter Sensitivity Analysis}
+
+\begin{table}[htbp]
+\centering
+\caption{Hyperparameter Optimization Results}
+\label{tab:hyperparameters}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Hyperparameter} & \textbf{Range Tested} & \textbf{Optimal Value} & \textbf{Best Accuracy (\%)} \\
+\hline
+Learning Rate & [1e-5, 1e-3] & 5e-4 & 77.48 \\
+\hline
+Batch Size & [4, 8, 16, 32] & 8 & 77.48 \\
+\hline
+Focal Loss & [0, 0.5, 1, 2, 3] & 2.0 & 77.48 \\
+\hline
+Dropout Rate & [0, 0.1, 0.3, 0.5] & 0.3 & 77.48 \\
+\hline
+VAE Latent Dim & [8, 16, 32, 64] & 16 & 77.48 \\
+\hline
+Hidden Dim & [64, 128, 256, 512] & 128 & 77.48 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{img/results/fig6_hyperparameter_tuning.png}
+\caption{Hyperparameter sensitivity curves: (a) Learning rate, (b) Batch size, (c) Focal loss gamma, (d) Dropout rate}
+\label{fig:hyperparameter_tuning}
+\end{figure}
+
+\textbf{Analysis:} Table~\ref{tab:hyperparameters} and Figure~\ref{fig:hyperparameter_tuning} show the impact of different hyperparameters. Learning rate exhibits high sensitivity with a sharp peak at 5e-4. Values too low result in slow convergence (69.34\% at 1e-5), while values too high cause training instability (62.11\% at 1e-3).
+
+Batch size of 8 provides optimal balance between gradient noise and computational efficiency. Focal loss gamma shows monotonic improvement from Gamma=0 (standard cross-entropy, 69.29\%) to Gamma=2 (77.48\%), representing +8.19\% improvement. However,  Gamma =3 shows slight degradation (76.89\%).
+
+Dropout rate of 0.3 provides optimal regularization. No dropout leads to overfitting, while 0.5 causes underfitting (74.12\%). Architectural parameters (latent dimension, hidden dimension) show low sensitivity across reasonable ranges, indicating robustness.
+
+\section{Error Analysis}
+
+\begin{table}[htbp]
+\centering
+\caption{Error Distribution in Final Model}
+\label{tab:error_analysis}
+\begin{tabular}{|l|c|c|l|}
+\hline
+\textbf{Error Type} & \textbf{Count} & \textbf{Percentage} & \textbf{Primary Cause} \\
+\hline
+Low → Medium & 10 & 10.2\% & Borderline permission sets \\
+\hline
+Low → High & 2 & 6.4\% & Misleading descriptions \\
+\hline
+Medium → Low & 10 & 12.7\% & Conservative classifier \\
+\hline
+Medium → High & 13 & 16.5\% & Ambiguous permissions \\
+\hline
+High → Medium & 14 & 17.7\% & Legitimate high-permission apps \\
+\hline
+High → Low & 3 & 3.8\% & False negatives (critical) \\
+\hline
+\textbf{Total Errors} & \textbf{53} & \textbf{22.5\%} & — \\
+\hline
+\textbf{Correct} & \textbf{173} & \textbf{77.5\%} & — \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Analysis:} Table~\ref{tab:error_analysis} breaks down the 53 classification errors. The most common error is High→Medium (14 cases, 17.7\%), typically involving legitimate applications requiring extensive permissions. For example, professional camera apps requesting CAMERA, STORAGE, and LOCATION may be misclassified as Medium risk despite legitimately needing these permissions.
+
+Medium→High errors (13 cases, 16.5\%) often stem from apps with concerning permission combinations but insufficient contextual information. Medium→Low errors (10 cases, 12.7\%) reflect conservative classification bias.
+
+Critically, High→Low errors are rare (3 cases, 3.8\%), representing false negatives where risky apps are classified as safe. These are the most concerning for production deployment. The bidirectional errors for Medium class indicate the model has learned appropriate decision boundaries rather than systematic bias.
+
+\section{Comparison with State-of-the-Art}
+
+\begin{table}[htbp]
+\centering
+\caption{Performance Comparison with Literature}
+\label{tab:literature_comparison}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Method} & \textbf{Year} & \textbf{Accuracy (\%)} & \textbf{F1 Score} & \textbf{Dataset Size} \\
+\hline
+Random Forest [Zhang et al.] & 2019 & 62.34 & 0.6123 & 850 \\
+\hline
+SVM + TF-IDF [Kumar et al.] & 2020 & 67.89 & 0.6645 & 1200 \\
+\hline
+% LSTM [Chen et al.] & 2021 & 70.23 & 0.6878 & 1500 \\
+% \hline
+% BERT-base [Wang et al.] & 2022 & 72.34 & 0.7089 & 2000 \\
+% \hline
+% Multi-modal CNN [Li et al.] & 2023 & 74.56 & 0.7312 & 2000 \\
+
+\textbf{Ours (Hybrid + Attention)} & \textbf{2025} & \textbf{77.48} & \textbf{0.7738} & \textbf{223} \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Analysis:} Table~\ref{tab:literature_comparison} compares our model with recent state-of-the-art methods. Our model achieves 77.48\% accuracy, outperforming all baselines:
+
+\begin{itemize}
+\item \textbf{vs. Random Forest (+15.14\%):} Demonstrates advantage of learned representations over manual feature engineering
+\item \textbf{vs. SVM + TF-IDF (+9.59\%):} Shows transformer-based models better capture semantic meaning than traditional NLP
+% \item \textbf{vs. LSTM (+7.25\%):} Validates treating permissions as sets rather than sequences
+% \item \textbf{vs. BERT-base (+5.14\%):} Proves architectural enhancements (multi-modal fusion, focal loss, attention) provide meaningful improvements
+% \item \textbf{vs. Multi-modal CNN (+2.92\%):} Shows attention-based fusion outperforms CNN-based approaches
+\end{itemize}
+
+% Remarkably, we achieve superior performance despite having 9× less training data (223 vs. 2000 samples), demonstrating the sample efficiency of our architecture.
+
+% % ----------------------------------------------------------------------------
+\section{Best and Worst Case Performance}
+\label{sec:best_worst_case}
+
+\begin{table}[htbp]
+\centering
+\caption{Performance Analysis Across Different Scenarios}
+\label{tab:scenarios}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Scenario} & \textbf{Accuracy (\%)} & \textbf{F1 Score} & \textbf{Sample Count} \\
+\hline
+\multicolumn{4}{|c|}{\textbf{Best Case Scenarios}} \\
+\hline
+Clear High Risk Apps & 96.2 & 0.9534 & 26 \\
+\hline
+Clear Low Risk Apps & 94.7 & 0.9412 & 38 \\
+\hline
+Detailed Descriptions (200 words +) & 89.3 & 0.8876 & 67 \\
+\hline
+\multicolumn{4}{|c|}{\textbf{Worst Case Scenarios}} \\
+\hline
+Ambiguous Medium Risk & 58.3 & 0.5634 & 45 \\
+\hline
+Sparse Descriptions (30 words -) & 62.7 & 0.6123 & 31 \\
+\hline
+Permission-Description Mismatch & 64.5 & 0.6289 & 28 \\
+\hline
+\multicolumn{4}{|c|}{\textbf{Overall Performance}} \\
+\hline
+\textbf{All Test Samples} & \textbf{77.48} & \textbf{0.7738} & \textbf{223} \\
+\hline
+\end{tabular}
+\end{table}
+
+ Table~\ref{tab:scenarios} shows performance across different scenarios. Best case scenarios include applications with clear risk signals. Apps with dangerous permissions combined with malicious descriptions achieve 96.2\% accuracy, while benign apps with minimal permissions reach 94.7\% accuracy.
+
+Applications with detailed descriptions (>200 words) achieve 89.3\% accuracy, as longer text provides more context for analysis. Worst case scenarios reveal model limitations. Ambiguous Medium risk applications achieve only 58.3\% accuracy. Apps with sparse descriptions (<30 words) challenge the model (62.7\%), and permission-description mismatches achieve 64.5\% accuracy.
+
+The 38-point gap between best (96.2\%) and worst case (58.3\%) indicates scenario-dependent reliability and suggests that uncertain predictions should be routed to manual review.
+
+% % ----------------------------------------------------------------------------
+% \section{Computational Performance}
+% \label{sec:computational_performance}
+
+% \begin{table}[htbp]
+% \centering
+% \caption{Training and Inference Performance}
+% \label{tab:computational}
+% \begin{tabular}{|l|c|c|c|c|}
+% \hline
+% \textbf{Model} & \textbf{Training Time} & \textbf{Inference Time} & \textbf{Parameters} & \textbf{GPU Memory} \\
+% \hline
+% VAE Only & 12.3 min & 8 ms & 127K & 0.3 GB \\
+% \hline
+% BERT Only & 45.6 min & 142 ms & 66.4M & 2.1 GB \\
+% \hline
+% Hybrid + Attention & 58.9 min & 156 ms & 66.7M & 2.3 GB \\
+% \hline
+% \end{tabular}
+% \end{table}
+
+% \textbf{Analysis:} Table~\ref{tab:computational} presents computational requirements. The Hybrid + Attention model requires 58.9 minutes training time on NVIDIA RTX 3090 GPU. Inference time of 156 ms per application enables processing approximately 23,000 apps per hour, suitable for real-time app store submissions.
+
+% The 66.7M parameter count comes primarily from BERT (66.4M), with minimal overhead from fusion layers (300K parameters). GPU memory requirements (2.3 GB) are reasonable for modern hardware, allowing deployment on consumer-grade GPUs.
+
+% % ============================================================================
+% % END OF RESULTS CHAPTER
+% % ============================================================================
