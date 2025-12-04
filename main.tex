@@ -155,8 +155,8 @@
 
 \pagenumbering{roman}
 
-\include{0ACover/0cover}
-\include{0ACover/1title}
+% \include{0ACover/0cover}
+% \include{0ACover/1title}
 % \include{0ACover/2copyright}
 % \include{0ACover/3declaration}
 % \include{0ACover/4recommendation}
@@ -189,7 +189,7 @@
 \listoftables
 \clearpage
 
-% \include{0IAbbreviations/abbreviations}
+\include{0IAbbreviations/abbreviations}
 
 \pagenumbering{arabic}
 
@@ -198,12 +198,11 @@
 \include{1Introduction/introduction}
 \include{2Literaturereview/literaturereview}
 \include{3Methodology/methodology}
-% \include{4Results/results}
-% \include{5DiscussionAndAnalysis/discussionAndAnalysis}
-% \include{6FutureEnhancement/limitations}
-% \include{7Conclusion/conclusion}
+\include{4Results/results}
+\include{5DiscussionAndAnalysis/discussionAndAnalysis}
+\include{6FutureEnhancement/limitations}
+\include{7Conclusion/conclusion}
 
-\include{3Dataset/dataset}
 %========================References setup=========================================================
 % Example citation to avoid natbib errors
 \nocite{*}
@@ -239,6 +238,6 @@
 \bibliographystyle{unsrt}
 \bibliography{References/references}
 
-\addcontentsline{toc}{chapter}{REFERENCES}
+ \addcontentsline{toc}{chapter}{REFERENCES}
 
 \end{document}

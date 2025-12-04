@@ -2,11 +2,15 @@
 
 \section{Theoretical Formulations}
 
-This section presents the theoretical foundation of the proposed Multi-Modal Hybrid Neural Network (MM-HNN) used for privacy risk classification of Android applications. The framework integrates structural, semantic, and contextual information obtained from permissions, metadata vectors, genre , and application descriptions. The model consists of three major components: (i) a Variational Autoencoder (VAE) for structural risk representation, (ii) a DistilBERT-based contextual encoder, and (iii) a multimodal fusion classifier.
+This section outlines the theoretical foundation of the proposed \textbf{Multi-Modal Hybrid Neural Network (MM-HNN)} designed for privacy risk classification of Android applications. The framework is built to jointly model \textbf{structural, semantic, and contextual information} derived from manifest-declared permissions, application metadata, genre information, and user-facing descriptions. From a conceptual standpoint, the MM-HNN architecture is structured around three complementary components: (i) a \textbf{Variational Autoencoder (VAE)} for learning latent structural representations of permission and metadata vectors, (ii) a \textbf{DistilBERT-based semantic encoder} for capturing contextual meaning from textual descriptions, and (iii) a \textbf{multimodal fusion classifier} that integrates both representations to produce final privacy risk predictions.
+
+The fundamental motivation behind this design is that privacy risk cannot be reliably inferred from isolated feature groups. Structural permission patterns alone may overlook contextual justification, while semantic descriptions without structural grounding may miss abnormal access behaviors. By combining both modalities within a unified supervised framework, MM-HNN aims to model privacy risk in a more realistic and interpretable manner.
 
 \subsection{Basic Concept of the Chosen Model}
 
-The Variational Autoencoder (VAE) is employed to learn a compact latent representation of high-dimensional permission and metadata vectors. VAEs provide a probabilistic generative framework that captures the underlying structure of the input distribution while encouraging smooth latent manifolds. This structural representation is crucial for detecting abnormal or excessive permission combinations.
+The \textbf{Variational Autoencoder (VAE)} is employed to learn compact and continuous latent representations of high-dimensional permission and metadata feature vectors. Unlike traditional autoencoders that generate a single deterministic encoding, VAEs adopt a probabilistic formulation in which each input is mapped to a distribution in the latent space. This distribution is typically parameterized by a mean vector and a variance vector, enabling controlled stochastic sampling during reconstruction. Through the use of a reconstruction loss and a Kullback–Leibler (KL) divergence regularization term, the VAE is trained to approximate the true data distribution while maintaining a smooth and well-structured latent manifold.
+
+This latent structural representation plays a central role in privacy risk analysis. Applications with common and justified permission combinations are expected to cluster in dense regions of the latent space, whereas over-privileged or abnormal apps tend to deviate from these high-density regions. As a result, the VAE serves as an effective mechanism for capturing hidden privacy-related patterns that cannot be observed directly from raw permission counts or simple statistical features.
 
 \begin{figure}[h]
     \centering
@@ -15,7 +19,9 @@ The Variational Autoencoder (VAE) is employed to learn a compact latent represen
     \label{fig:vae-architecture}
 \end{figure}
 
-Parallel to the VAE, DistilBERT is utilized to extract contextual and semantic features from the application descriptions. DistilBERT preserves the linguistic reasoning capability of BERT while being computationally efficient, making it suitable for large-scale app analysis. It produces sentence-level embeddings that represent the functional intent of the application. 
+In parallel to the structural modeling process, \textbf{DistilBERT} is employed to extract contextual and semantic features from application descriptions. DistilBERT is a compressed transformer-based language model derived from BERT through knowledge distillation. While significantly lighter in terms of parameter count and computational cost, DistilBERT retains most of BERT’s language understanding capability. Given an app description as input, DistilBERT generates dense sentence-level embeddings that encode the functional intent, behavioral claims, and contextual cues present in the textual description.
+
+These semantic embeddings provide critical information that cannot be inferred from permissions alone. For example, the textual description may reveal whether a location request is justified for navigation features or appears unnecessary for a simple utility application. By mapping descriptions into a continuous semantic space, the model gains the ability to reason about permission–functionality alignment at a contextual level.
 
 \begin{figure}[ht]
     \centering
@@ -24,43 +30,46 @@ Parallel to the VAE, DistilBERT is utilized to extract contextual and semantic f
     \label{fig:distilBERT-architecture}
 \end{figure}
 
-The MM-HNN framework fuses both modalities—structural latent features and semantic embeddings—along with a manually constructed genre-weight feature to produce a unified risk classification. This multimodal approach enables the system to jointly evaluate the necessity, justification, and sensitivity of permissions requested by the application.
+The overall MM-HNN framework performs \textbf{multimodal fusion} by combining (i) the latent structural features produced by the VAE, (ii) the semantic embeddings extracted using DistilBERT, and (iii) a manually constructed \textbf{genre-weight feature}. The genre-weight component encodes domain-specific expectations regarding typical permission usage (e.g., health, navigation, finance, gaming). These combined representations are passed to a supervised classification layer that outputs the final privacy risk category for each application. Through this fusion process, the system jointly evaluates the necessity, contextual justification, and sensitivity of the permissions requested.
 
 \subsection{Major Benefits of the Chosen Techniques}
 
 \begin{itemize}
     \item \textbf{Variational Autoencoder:}
     \begin{itemize}
-        \item Learns smooth and continuous latent representations suitable for anomaly detection.
-        \item Performs dimensionality reduction while preserving structural relationships among permissions.
-        \item Captures latent privacy risk patterns beyond raw permission counts.
+        \item Learns smooth and continuous latent representations that are well-suited for capturing complex permission–metadata relationships.
+        \item Performs effective dimensionality reduction while preserving meaningful structural dependencies among permission features.
+        \item Identifies latent privacy risk patterns that extend beyond simple permission frequency or count-based heuristics.
     \end{itemize}
 
     \item \textbf{DistilBERT Encoder:}
     \begin{itemize}
-        \item Extracts deep contextual information from app descriptions.
-        \item Captures semantic consistency between app purpose and requested permissions.
-        \item Lightweight compared to BERT, reducing computational complexity.
+        \item Extracts deep contextual semantics from natural-language app descriptions.
+        \item Enables conceptual alignment between declared app functionality and requested permissions.
+        \item Maintains a lightweight architecture compared to full-scale BERT, thereby reducing inference time and memory requirements.
     \end{itemize}
 
     \item \textbf{Multimodal Fusion:}
     \begin{itemize}
-        \item Integrates structural anomalies with contextual meaning.
-        \item Provides more robust classification than single-modality models.
-        \item Enables detection of over-privileged apps even when permissions seem normal but contextually unjustified.
+        \item Integrates structural abnormalities with semantic interpretation to produce comprehensive risk signals.
+        \item Improves classification robustness by leveraging complementary information from multiple data modalities.
+        \item Enables detection of over-privileged applications even when their raw permission profiles appear statistically normal but are contextually inconsistent.
     \end{itemize}
 \end{itemize}
 
 \subsection{Assumptions Considered}
 
+The proposed MM-HNN framework is developed under the following modeling assumptions:
+
 \begin{itemize}
-    \item The manifest-declared permissions reflect the functional behavior of the application.
-    \item App descriptions provided in the Google Play Store represent the developer’s declared intent.
-    \item The dataset of Nepali-region Android apps is representative of the general permission–usage patterns.
-    \item Permissions are treated as binary features (requested or not requested).
-    \item Genre information is assumed to influence the permission justification (e.g., health apps may reasonably request sensors).
-    \item Labeled risk categories (Low, Moderate, High, Critical) accurately reflect expert-annotated privacy sensitivity.
+    \item Manifest-declared permissions are assumed to reasonably reflect the functional behavior and access intentions of the application.
+    \item Application descriptions published on the Google Play Store are assumed to represent the developer’s declared functional intent.
+    \item The curated dataset of Nepali-region Android applications is assumed to be broadly representative of general permission usage trends within similar markets.
+    \item Permissions are modeled as binary input features, indicating whether a specific permission is requested or not.
+    \item Genre information is assumed to influence permission justification, as different application categories naturally require different access levels (e.g., health and navigation apps).
+    \item Privacy risk labels (Low, Moderate, High, Critical) are assumed to accurately reflect expert-driven assessments of potential privacy exposure.
 \end{itemize}
+
 
 
 \section{Mathematical Modeling}

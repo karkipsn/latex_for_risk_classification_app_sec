@@ -2,9 +2,17 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Variational Autoencoder Architecture}}{12}{figure.caption.5}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces DistilBERT Architecture}}{13}{figure.caption.6}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces System Block DIagram of MMHNN Architecture }}{17}{figure.caption.7}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Distribution of text description lengths}}{25}{figure.caption.12}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Label stability under genre weight perturbation}}{29}{figure.caption.16}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Variational Autoencoder Architecture}}{13}{figure.caption.6}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces DistilBERT Architecture}}{14}{figure.caption.7}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces System Block DIagram of MMHNN Architecture }}{19}{figure.caption.8}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Distribution of text description lengths}}{28}{figure.caption.13}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Label stability under genre weight perturbation}}{33}{figure.caption.17}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Confusion matrices for (a) VAE Only (b) BERT Only, (c) Hybrid + Focal Loss, and (d) Hybrid + Focal Loss, and (e) Hybrid + Attention (final model).}}{46}{figure.caption.25}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces ROC curves for the Hybrid + Attention model across all risk classes.}}{47}{figure.caption.26}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Training and validation curves for Hybrid + Attention model: (a) Loss convergence, (b) Accuracy progression, (c) Per-class F1 score evolution.}}{49}{figure.caption.28}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Visual representation of ablation study showing performance impact of removing each component.}}{50}{figure.caption.30}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Hyperparameter sensitivity curves: (a) Learning rate, (b) Batch size, (c) Focal loss gamma, (d) Dropout rate}}{52}{figure.caption.32}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
 \addvspace {10\p@ }
